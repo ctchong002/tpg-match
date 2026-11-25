@@ -18,6 +18,7 @@
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="TPG Pillar's AI">
 <meta name="twitter:image" content="https://ai.thepillarsgroup.com/assets/og-image.jpg">
+<link rel="stylesheet" href="assets/fonts.css">
 <link rel="stylesheet" href="portal.css">
 <link rel="stylesheet" href="matches.css">
 </head>
@@ -38,6 +39,8 @@
   </div>
   <div class="center-card-body">
   <h1>TPG Pillar's AI</h1>
+  <div class="login-hair"></div>
+  <p class="login-tag">Proud Of Each Others</p>
   <p class="muted">只限已授权的 email 登录 · Authorised emails only</p>
   <form id="f-email">
     <label>Email<input id="email" type="email" required autocomplete="email" placeholder="you@example.com"></label>
@@ -73,10 +76,10 @@
       <span class="brand-name">TPG Pillar's AI</span>
     </div>
     <div class="tabs-top" id="tabs">
-      <button data-tab="industry" class="on">🏭 工厂 Industry</button>
-      <button data-tab="residential">🏠 住宅 Residential</button>
-      <button data-tab="matches">🔔 我的配对 My Matches</button>
-      <button data-tab="agents" id="tab-agents" hidden>👥 Agents</button>
+      <button data-tab="industry" class="on">工厂 <span class="en">Industry</span></button>
+      <button data-tab="residential">住宅 <span class="en">Residential</span></button>
+      <button data-tab="matches">配对 <span class="en">My Matches</span></button>
+      <button data-tab="agents" id="tab-agents" hidden>Agents</button>
     </div>
     <div class="who"><span id="who"></span> <button class="link" id="out">登出</button></div>
   </nav>
@@ -123,7 +126,7 @@
       <div id="match-list" class="list"></div>
 
       <h2>📥 通知 Inbox</h2>
-      <div id="inbox" class="list"><p class="muted">还没有通知。No notifications yet.</p></div>
+      <div id="inbox" class="list"><p class="empty-note">还没有通知。No notifications yet.</p></div>
     </div>
   </div>
 

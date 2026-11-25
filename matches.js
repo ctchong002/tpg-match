@@ -10,7 +10,7 @@
   function landTxt(v) { return v >= AC ? fmt(Math.round(v / AC * 100) / 100) + " acre" : fmt(v) + " sf"; }
   function rng(a, b, f) { return a == null && b == null ? "" : a == null ? "≤ " + f(b) : b == null ? "≥ " + f(a) : f(a) + " – " + f(b); }
   var ZON = { L: "轻工业 Light", M: "中工业 Medium", H: "重工业 Heavy" }, FUR = { F: "全家私 Fully", P: "半家私 Partly", B: "空屋 Bare" },
-      LOT = { N: "Non-Bumi", B: "Bumi lot" }, TEN = { freehold: "Freehold", leasehold: "Leasehold" },
+      LOT = { N: "Non-Bumi", B: "Bumi lot", M: "Bumi lot" }, TEN = { freehold: "Freehold", leasehold: "Leasehold" },
       TYP = { Highrise: "Highrise 高楼", Landed: "Landed 有地", Industry: "Industry 工业", Commercial: "Commercial 商业", Land: "Land 地皮", "Business Takeover": "Business Takeover 生意出顶" };
 
   var st = { kind: "WTR", cat: "industry", types: [], areas: [], zon: [], fur: [], lot: [], editing: null };
@@ -111,7 +111,7 @@
     }).then(function (r) {
       if (r.error) { $("reqs").innerHTML = "<p class='msg'>" + esc(errText(r.error)) + "</p>"; return; }
       reqs = r.data;
-      if (!reqs.length) { $("reqs").innerHTML = "<p class='muted'>还没有需求，在下面新增一个。No requirements yet.</p>"; return; }
+      if (!reqs.length) { $("reqs").innerHTML = "<p class='empty-note'>还没有需求，在下面新增一个。No requirements yet.</p>"; return; }
       $("reqs").innerHTML = reqs.map(function (q) {
         var dl = Math.ceil((new Date(q.expires_at) - Date.now()) / 864e5), off = q.status !== "active" || dl <= 0;
         var badge = q.status === "active" && dl > 0 ? "剩 " + dl + " 天" : q.status === "paused" ? "暂停 paused" : "已过期 expired";
@@ -153,12 +153,18 @@
     return sb.rpc("my_matches", { p_limit: 100 }).then(function (r) {
       if (r.error) { $("match-list").innerHTML = "<p class='msg'>" + esc(errText(r.error)) + "</p>"; return; }
       matchCount = {}; (r.data || []).forEach(function (m) { matchCount[m.requirement_id] = (matchCount[m.requirement_id] || 0) + 1; });
-      if (!r.data.length) { $("match-list").innerHTML = "<p class='muted'>还没有配对。每次资料更新后，库里以前没有的新盘完全符合你的需求，就会出现在这里并 email 给你。<br>No matches yet.</p>"; return; }
+      if (!r.data.length) { $("match-list").innerHTML = "<p class='empty-note'>还没有配对。每次资料更新后，库里以前没有的新盘完全符合你的需求，就会出现在这里并 email 给你。<br>No matches yet.</p>"; return; }
       $("match-list").innerHTML = r.data.map(function (m) {
         var l = m.listing, ph = wa(l.agent_phone), pr = m.req_kind === "WTR" ? (l.price_rent ? "租 " + money(l.price_rent) + "/月" : "") : (l.price_sale ? "卖 " + money(l.price_sale) : "");
-        return "<div class='item mcard'><div class='t'>" + esc(l.type || "") + " · " + esc(l.area || "") + (l.deleted ? " <span class='tag off'>已下架 removed</span>" : "") + "</div>" +
+        var deal = l.deal === "rent" ? "出租 Rent" : l.deal === "sale" ? "出售 Sale" : l.deal === "both" ? "租/卖 Rent & Sale" : "";
+        var dealCls = l.deal === "rent" ? "rent" : "sale";
+        return "<div class='item mcard'><div class='card-top'><div class='badges'>" +
+          (deal ? "<span class='tag'>" + deal + "</span>" : "") +
+          (l.deleted ? " <span class='tag off'>已下架 removed</span>" : "") + "</div></div>" +
+          "<div class='t'>" + esc(l.area || "") + "</div>" +
+          "<div class='sp'>" + esc(l.type || "") + "</div>" +
           "<div class='p'>" + esc(pr) + "</div><div class='sp'>" + esc(specs(l)) + "</div>" +
-          "<div class='sp'>👤 " + esc(l.agent_name || "-") + (ph ? " · " + esc(l.agent_phone) + " <a class='wa' target='_blank' rel='noopener' href='https://wa.me/" + ph + "'>WhatsApp</a>" : "") + "</div>" +
+          "<div class='sp'>" + esc(l.agent_name || "-") + (ph ? " · " + esc(l.agent_phone) + " <a class='wa' target='_blank' rel='noopener' href='https://wa.me/" + ph + "'>WhatsApp</a>" : "") + "</div>" +
           "<div class='sp muted'>🎯 " + esc(m.req_title || m.req_kind) + " · " + new Date(m.created_at).toLocaleDateString() + " · " + esc(l.src_id) + "</div>" +
           (l.text ? "<details><summary>原帖 Original post</summary><pre>" + esc(l.text) + "</pre></details>" : "") + "</div>";
       }).join("");

@@ -1,6 +1,8 @@
 // Used inside /industry/ and /residential/: gets data from the portal (parent window), then starts the original page script.
 (function () {
   var cat = document.currentScript.getAttribute("data-cat");
+  document.documentElement.classList.add("in-portal");
+  if (document.body) document.body.classList.add("in-portal");
   var P = null; try { P = window.parent !== window && window.parent.TPG ? window.parent.TPG : null; } catch (e) {}
   if (!P) { location.replace("../#" + cat); return; }
   var cover = document.getElementById("cover");
