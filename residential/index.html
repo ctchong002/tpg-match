@@ -57,7 +57,7 @@
   <h2>More filters 更多条件</h2>
   <div class="sec" data-k="ar"><button type="button" class="sh">地区 Area<span class="sv"></span><span class="ar">▼</span></button><div class="sb"><div class="chips" id="areas"></div></div></div>
   <div class="sec" data-k="bu"><button type="button" class="sh">Built-up 建筑面积 (sf)<span class="sv"></span><span class="ar">▼</span></button><div class="sb"><div class="mm"><input id="bumin" type="number" inputmode="numeric" placeholder="No Min" aria-label="No Min"><span class="dash">–</span><input id="bumax" type="number" inputmode="numeric" placeholder="No Max" aria-label="No Max"></div></div></div>
-  <div class="sec" data-k="ld"><button type="button" class="sh">Land size 土地面积 (sf)<span class="sv"></span><span class="ar">▼</span></button><div class="sb"><div class="mm"><input id="landmin" type="number" inputmode="numeric" placeholder="No Min" aria-label="No Min"><span class="dash">–</span><input id="landmax" type="number" inputmode="numeric" placeholder="No Max" aria-label="No Max"></div></div></div>
+  <div class="sec" data-k="ld"><button type="button" class="sh">Land Area 土地面积 (sf)<span class="sv"></span><span class="ar">▼</span></button><div class="sb"><div class="mm"><input id="landmin" type="number" inputmode="numeric" placeholder="No Min" aria-label="No Min"><span class="dash">–</span><input id="landmax" type="number" inputmode="numeric" placeholder="No Max" aria-label="No Max"></div></div></div>
   <div class="sec" data-k="beds"><button type="button" class="sh">Bedrooms 房间<span class="sv"></span><span class="ar">▼</span></button><div class="sb"><div class="chips" id="beds">
     <button type="button" class="chip" data-v="0">Studio+</button>
     <button type="button" class="chip" data-v="1">1+</button>
@@ -81,7 +81,7 @@
     <option value="pd">价钱 高→低</option>
     <option value="psf">psf 低→高</option>
     <option value="bu">屋身 大→小</option>
-    <option value="ld">土地 大→小</option>
+    <option value="ld">Land Area 大→小</option>
   </select>
 </div>
 <div id="list"></div>
@@ -236,7 +236,7 @@ function wa(ag,r){if(!ag[1])return esc(ag[0]||"?")+" <span class='small'>(无电
 function card(r,idx){
   var t=TY[r[2]],sp=[TZH[t]||t];
   if(r[3])sp.push(r[3]+" 层 storey");if(r[4])sp.push(/^L/.test(r[4])?"Level "+r[4].slice(1):r[4]+" floor");if(r[5])sp.push(r[5]);
-  if(r[6])sp.push("土地 Land "+r[6].toLocaleString()+" sf");if(r[7])sp.push("屋身 BU "+r[7].toLocaleString()+" sf");
+  if(r[6])sp.push("Land Area "+r[6].toLocaleString()+" sf");if(r[7])sp.push("屋身 BU "+r[7].toLocaleString()+" sf");
   if(r[8]>=0)sp.push((r[8]===0&&!r[9]?"Studio":(r[9]||r[8])+" 房")+(r[10]?" "+r[10]+" 厕":""));
   var sp2=[];if(r[11])sp2.push({F:"全家私 Fully furnished",P:"半家私 Partly furnished",B:"空屋 Bare"}[r[11]]);if(r[12])sp2.push(r[12]==="FH"?"Freehold 永久":"Leasehold 租赁");
   if(r[13])sp2.push({N:"Non-Bumi / Intl",B:"Bumi lot 土著",M:"Malay Reserve"}[r[13]]);

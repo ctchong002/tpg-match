@@ -10,7 +10,8 @@
   function landTxt(v) { return v >= AC ? fmt(Math.round(v / AC * 100) / 100) + " acre" : fmt(v) + " sf"; }
   function rng(a, b, f) { return a == null && b == null ? "" : a == null ? "≤ " + f(b) : b == null ? "≥ " + f(a) : f(a) + " – " + f(b); }
   var ZON = { L: "轻工业 Light", M: "中工业 Medium", H: "重工业 Heavy" }, FUR = { F: "全家私 Fully", P: "半家私 Partly", B: "空屋 Bare" },
-      LOT = { N: "Non-Bumi", B: "Bumi lot", M: "Malay Reserve" }, TEN = { freehold: "Freehold", leasehold: "Leasehold" };
+      LOT = { N: "Non-Bumi", B: "Bumi lot" }, TEN = { freehold: "Freehold", leasehold: "Leasehold" },
+      TYP = { Highrise: "Highrise 高楼", Landed: "Landed 有地", Industry: "Industry 工业", Commercial: "Commercial 商业", Land: "Land 地皮", "Business Takeover": "Business Takeover 生意出顶" };
 
   var st = { kind: "WTR", cat: "industry", types: [], areas: [], zon: [], fur: [], lot: [], editing: null };
   var opts = {};   // category -> {types, areas}
@@ -22,7 +23,7 @@
   // ---------- form rendering ----------
   function seg(id, val) { [].forEach.call($(id).children, function (b) { b.classList.toggle("on", b.dataset.v === val); }); }
   function chipsHtml(list, sel, label) {
-    return list.map(function (o) { var v = o.v || o; return "<button type='button' class='chip" + (sel.indexOf(v) >= 0 ? " on" : "") + "' data-v='" + esc(v) + "'>" + esc(label ? label[v] || v : v) + (o.n ? "<small>" + o.n + "</small>" : "") + "</button>"; }).join("");
+    return list.map(function (o) { var v = o.v || o, lab = o.label || (label ? label[v] || v : v); return "<button type='button' class='chip" + (sel.indexOf(v) >= 0 ? " on" : "") + "' data-v='" + esc(v) + "'>" + esc(lab) + (o.n ? "<small>" + o.n + "</small>" : "") + "</button>"; }).join("");
   }
   function renderForm() {
     seg("r-kind", st.kind); seg("r-cat", st.cat);
@@ -31,7 +32,7 @@
     $("l-price").firstElementChild.textContent = st.kind === "WTR" ? "月租 Monthly rent (RM)" : "售价 Sale price (RM)";
     $("r-zon").innerHTML = chipsHtml(["L", "M", "H"], st.zon, ZON);
     $("r-fur").innerHTML = chipsHtml(["F", "P", "B"], st.fur, FUR);
-    $("r-lot").innerHTML = chipsHtml(["N", "B", "M"], st.lot, LOT);
+    $("r-lot").innerHTML = chipsHtml(["N", "B"], st.lot, LOT);
     $("r-areas-sel").innerHTML = st.areas.map(function (a) { return "<button type='button' class='chip on x' data-v='" + esc(a) + "'>" + esc(a) + "</button>"; }).join("") || "<span class='muted' style='font-size:13px'>还没选 none yet</span>";
     $("r-types").innerHTML = "<span class='muted'>载入中… loading</span>";
     getOpts(st.cat).then(function (o) {
@@ -89,7 +90,7 @@
   // ---------- my requirements ----------
   var reqs = [], matchCount = {};
   function crit(q) {
-    var rent = q.kind === "WTR", p = [q.property_types.join(" / "), q.areas.join(", ")];
+    var rent = q.kind === "WTR", p = [q.property_types.map(function (t) { return TYP[t] || t; }).join(" / "), q.areas.join(", ")];
     var pr = rng(q.price_min, q.price_max, money); if (pr) p.push((rent ? "月租 " : "价钱 ") + pr);
     var bu = rng(q.built_up_min, q.built_up_max, fmt); if (bu) p.push("BU " + bu + " sf");
     var ld = rng(q.land_min, q.land_max, landTxt); if (ld) p.push("Land Area " + ld);
