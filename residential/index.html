@@ -28,7 +28,7 @@
 </header>
 <div class="fp" id="panel"><div>
   <div class="fp-top">
-  <div class="search-row"><div class="search"><span class="ico">🔍</span><input id="q" type="search" placeholder="Search location 地区 / 项目" enterkeyhint="search" autocomplete="off"></div><button type="button" class="filt-toggle" id="filt-toggle" aria-expanded="false">筛选 Filters</button></div>
+  <div class="search-row"><div class="search"><span class="ico">🔍</span><input id="q" type="search" placeholder="Search 地区 / 项目" enterkeyhint="search" autocomplete="off"></div><button type="button" class="filt-toggle" id="filt-toggle" aria-expanded="false">筛选 Filters</button></div>
   <div class="tabs" id="sr">
     <button type="button" data-v="" class="on">全部 All</button>
     <button type="button" data-v="s">Buy 买</button>
@@ -229,7 +229,7 @@ function run(){
     if(pmax&&(!p||p>pmax))return false;
     if(fu&&r[11]!==fu)return false;
     if(te&&r[12]!==te)return false;
-    if(bm&&r[13]!==bm)return false;
+    if(bm&&!(bm==="B"?r[13]==="B"||r[13]==="M":r[13]===bm))return false;
     if(gr.length&&gr.indexOf(+r[21])<0&&!r[22].some(function(a){return gr.indexOf(+a[2])>=0}))return false;
     return true});
   res=applySearch(res,q);
