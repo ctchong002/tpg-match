@@ -30,11 +30,11 @@
   <h2>More filters 更多条件</h2>
     <div class="sec" data-k="ar"><button type="button" class="sh">地区 Area<span class="sv"></span><span class="ar">▼</span></button><div class="sb"><div class="chips" id="areas"></div></div></div>
     <div class="sec" data-k="bu"><button type="button" class="sh">Built-up 建筑面积 (sf)<span class="sv"></span><span class="ar">▼</span></button><div class="sb"><div class="mm"><input id="minBu" type="number" inputmode="numeric" placeholder="No Min" aria-label="No Min"><span class="dash">–</span><input id="maxBu" type="number" inputmode="numeric" placeholder="No Max" aria-label="No Max"></div></div></div>
-    <div class="sec" data-k="ld"><button type="button" class="sh">Land size 土地面积 (sf)<span class="sv"></span><span class="ar">▼</span></button><div class="sb"><div class="mm"><input id="minLd" type="number" inputmode="numeric" placeholder="No Min" aria-label="No Min"><span class="dash">–</span><input id="maxLd" type="number" inputmode="numeric" placeholder="No Max" aria-label="No Max"></div></div></div>
+    <div class="sec" data-k="ld"><button type="button" class="sh">Land Area 土地面积 (sf)<span class="sv"></span><span class="ar">▼</span></button><div class="sb"><div class="mm"><input id="minLd" type="number" inputmode="numeric" placeholder="No Min" aria-label="No Min"><span class="dash">–</span><input id="maxLd" type="number" inputmode="numeric" placeholder="No Max" aria-label="No Max"></div></div></div>
     <div class="sec" data-k="amp"><button type="button" class="sh">Power 电 (amp)<span class="sv"></span><span class="ar">▼</span></button><div class="sb"><div class="mm"><input id="minAmp" type="number" inputmode="numeric" placeholder="No Min" aria-label="No Min"><span class="dash">–</span><input id="maxAmp" type="number" inputmode="numeric" placeholder="No Max" aria-label="No Max"></div></div></div>
     <div class="sec" data-k="ten"><button type="button" class="sh">Tenure 地契<span class="sv"></span><span class="ar">▼</span></button><div class="sb"><div class="fld"><select id="ten" aria-label="Tenure"><option value="">不限 Any</option><option value="F">Freehold 永久</option><option value="L">Leasehold 租赁</option></select></div></div></div>
     <div class="sec" data-k="kw"><button type="button" class="sh">Keywords 关键字<span class="sv"></span><span class="ar">▼</span></button><div class="sb"><div class="fld"><input id="kw" type="search" placeholder="e.g. gas, sprinkler, crane, 角头" autocomplete="off"></div><div class="hint">每个字都要在盘的原文里出现 All words must appear in the post.</div></div></div>
-    <div class="sec" data-k="mo"><button type="button" class="sh">Ceiling / Loading / Industry 楼高 · 载重 · 类别<span class="sv"></span><span class="ar">▼</span></button><div class="sb"><div class="mm" style="grid-template-columns:1fr 1fr"><label class="fld"><span>楼高 最少 Min ceiling</span><input id="minCeil" type="number" inputmode="decimal"></label><label class="fld"><span>单位 Unit</span><select id="ceilU"><option value="ft">ft 尺</option><option value="m">m 米</option></select></label><label class="fld"><span>载重 最少 Min loading (kN/m²)</span><input id="minFl" type="number" inputmode="numeric"></label><label class="fld"><span>工业类别 Industry</span><select id="ind"><option value="">不限 Any</option><option value="L">Light</option><option value="M">Medium</option><option value="H">Heavy</option></select></label></div></div></div>
+    <div class="sec" data-k="mo"><button type="button" class="sh">Ceiling / Loading / Industry 楼高 · 载重 · 类别<span class="sv"></span><span class="ar">▼</span></button><div class="sb"><div class="mm" style="grid-template-columns:1fr 1fr"><label class="fld"><span>楼高最少 Min ceiling (m)</span><input id="minCeil" type="number" inputmode="decimal" placeholder="e.g. 8"></label><label class="fld"><span>载重 最少 Min loading (kN/m²)</span><input id="minFl" type="number" inputmode="numeric"></label><label class="fld"><span>工业类别 Industry</span><select id="ind"><option value="">不限 Any</option><option value="L">Light</option><option value="M">Medium</option><option value="H">Heavy</option></select></label></div></div></div>
     <div class="sec" data-k="gr"><button type="button" class="sh">来源群 Group<span class="sv"></span><span class="ar">▼</span></button><div class="sb"><div class="chips" id="groups"></div></div></div>
   <div class="acts"><button type="button" id="reset">重设 Reset</button><button type="button" class="pri" id="go">看结果 Show results</button></div>
 </div></div>
@@ -42,6 +42,7 @@
   <select id="sort" aria-label="排序 sort">
     <option value="new">最新 Newest</option><option value="pa">价钱 低→高</option><option value="pd">价钱 高→低</option>
     <option value="amp">电 Amp 高→低</option><option value="bu">建筑 BU 大→小</option>
+    <option value="ceil">楼高 Ceiling 高→低</option>
   </select></div>
 <div id="list"></div>
 <button id="more" type="button" hidden>显示更多 Show more</button>
@@ -60,6 +61,7 @@ var SENAI_X=/i-?synergy|seelong|idaman|m-?park|airport city|ebp ?2|eco business 
 var MON=["","1月","2月","3月","4月","5月","6月","7月","8月","9月","10月","11月","12月"];
 function dstr(s){return parseInt(s.slice(4,6),10)+"/"+parseInt(s.slice(2,4),10)+"/20"+s.slice(0,2)}
 function fmtN(n){return Math.round(n).toLocaleString("en-US")}
+function ceilM(x){var m=x.cm?+x.cm:(x.cf?x.cf*0.3048:null);return m==null?null:Math.round(m*10)/10}
 function money(v){return v>=1e6?"RM"+(v/1e6).toFixed(v>=1e7?1:2).replace(/\.?0+$/,"")+"mil":"RM"+fmtN(v)}
 function esc(s){return String(s).replace(/[&<>"']/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]})}
 function gtags(mask){var o=[];for(var i=0;i<G.length;i++)if(mask&(1<<i))o.push(G[i]);return o}
@@ -93,7 +95,7 @@ chips("groups",G.map(function(g){return [g,g+" · "+GN[g]]}));
 $("sr").addEventListener("click",function(e){var b=e.target.closest("button");if(!b)return;[].forEach.call($("sr").children,function(c){c.classList.toggle("on",c===b)});run()});
 function on(el){return [].map.call($(el).querySelectorAll(".chip.on"),function(b){return b.dataset.v})}
 function num(id){var v=parseFloat($(id).value);return isNaN(v)?null:v}
-var NUMS=["minAmp","maxAmp","minBu","maxBu","minLd","maxLd","minCeil","minFl","minP","maxP"],SELS=["ceilU","ind","ten","sort"];
+var NUMS=["minAmp","maxAmp","minBu","maxBu","minLd","maxLd","minCeil","minFl","minP","maxP"],SELS=["ind","ten","sort"];
 function state(){var s={cat:$("cat").querySelector(".on").dataset.v,q:$("q").value.trim(),sr:$("sr").querySelector(".on").dataset.v,ar:on("areas"),ty:on("types"),gr:on("groups"),kw:$("kw").value.trim()};
   NUMS.forEach(function(k){s[k]=num(k)});SELS.forEach(function(k){s[k]=$(k).value});return s}
 function price(x,sr){if(sr==="r")return x.rent||0;if(sr==="s")return x.sale||0;return x.rent||x.sale||0}
@@ -110,7 +112,7 @@ function match(x,s){
   if(s.maxBu!=null&&!(x.bu&&x.bu<=s.maxBu))return false;
   if(s.minLd!=null&&!(x.ld>=s.minLd))return false;
   if(s.maxLd!=null&&!(x.ld&&x.ld<=s.maxLd))return false;
-  if(s.minCeil!=null){var c=s.ceilU==="m"?x.cm:(x.cf||x.cm*3.281);if(!(c>=s.minCeil-0.05))return false}
+  if(s.minCeil!=null){var c=ceilM(x);if(!(c>=s.minCeil-0.05))return false}
   if(s.minFl!=null&&!(x.fl>=s.minFl))return false;
   if(s.maxP!=null){var p=price(x,s.sr);if(!(p&&p<=s.maxP))return false}
   if(s.minP!=null){var p2=price(x,s.sr);if(!(p2&&p2>=s.minP))return false}
@@ -125,6 +127,7 @@ function srt(s){var k=s.sort;res.sort(function(a,b){
   if(k==="pa"||k==="pd"){var pa=price(a,s.sr),pb=price(b,s.sr);if(!pa)return 1;if(!pb)return -1;return k==="pa"?pa-pb:pb-pa}
   if(k==="amp")return (b.amp||0)-(a.amp||0)||(b.last>a.last?1:-1);
   if(k==="bu")return (b.bu||0)-(a.bu||0)||(b.last>a.last?1:-1);
+  if(k==="ceil")return (ceilM(b)||0)-(ceilM(a)||0)||(b.last>a.last?1:-1);
   return b.last>a.last?1:b.last<a.last?-1:0})}
 function agLink(a,x,label){var g=D.agents[a[0]],nm=g[0]||("0"+g[1].slice(2))||"?",ph=g[1];
   if(!ph)return '<b>'+esc(nm)+'</b>';
@@ -137,9 +140,9 @@ function card(x,i,s){
   var title=(i+1)+". "+place+" · "+(TN[x.t]||"Factory")+(srT?" · "+srT:"");
   var sp=[];
   sp.push("BU "+(x.bu?fmtN(x.bu)+"sf":"-"));
-  sp.push("地 "+(x.ld?fmtN(x.ld)+"sf"+(x.ld>=21780?" ("+(x.ld/43560).toFixed(2).replace(/\.?0+$/,"")+"ac)":""):"-"));
+  sp.push("Land Area "+(x.ld?fmtN(x.ld)+"sf"+(x.ld>=21780?" ("+(x.ld/43560).toFixed(2).replace(/\.?0+$/,"")+"ac)":""):"-"));
   sp.push(x.amp?x.amp+"A":"电 -");
-  sp.push("楼高 "+(x.cm?(+x.cm.toFixed(1))+"m"+(x.cf?"/"+Math.round(x.cf)+"ft":""):"-"));
+  var cH=ceilM(x);sp.push("楼高 "+(cH!=null?(+cH.toFixed(1))+"m":"-"));
   if(x.fl)sp.push("载重 "+x.fl+"kN/m²");
   if(x.ind)sp.push(IND[x.ind]);
   if(x.ten)sp.push(TEN[x.ten]);
@@ -174,7 +177,7 @@ function rng(a,b,u){a=num(a);b=num(b);if(a==null&&b==null)return "";return (a!=n
 function listLab(a){return a.length<=3?a.join("、"):a.slice(0,3).join("、")+" 等 "+a.length+" 个"}
 function secLab(){var v={ar:listLab(on("areas")),bu:rng("minBu","maxBu"," sf"),ld:rng("minLd","maxLd"," sf"),amp:rng("minAmp","maxAmp"," A"),
     ten:$("ten").value?$("ten").options[$("ten").selectedIndex].text:"",kw:$("kw").value.trim(),
-    mo:[num("minCeil")!=null?"≥"+num("minCeil")+$("ceilU").value:"",num("minFl")!=null?"≥"+num("minFl")+"kN":"",$("ind").value?$("ind").options[$("ind").selectedIndex].text:""].filter(Boolean).join(" · "),
+    mo:[num("minCeil")!=null?"≥"+num("minCeil")+"m":"",num("minFl")!=null?"≥"+num("minFl")+"kN":"",$("ind").value?$("ind").options[$("ind").selectedIndex].text:""].filter(Boolean).join(" · "),
     gr:listLab(on("groups"))};
   [].forEach.call(document.querySelectorAll(".sec"),function(el){var t=v[el.dataset.k]||"";el.querySelector(".sv").textContent=t||"Any";el.classList.toggle("act",!!t);
     el.querySelector(".sh").setAttribute("aria-expanded",el.classList.contains("open"))})}
@@ -194,10 +197,10 @@ function load(){var h=location.hash.slice(1);if(!h)return;h.split("&").forEach(f
   else if($(k))$(k).value=v});}
 $("q").addEventListener("input",function(){clearTimeout(tmr);tmr=setTimeout(run,200)});
 $("q").addEventListener("keydown",function(e){if(e.key==="Enter"){$("q").blur();run()}});
-NUMS.concat(["ceilU","ind","ten"]).forEach(function(k){$(k).addEventListener("input",function(){clearTimeout(tmr);tmr=setTimeout(run,300)})});
+NUMS.concat(["ind","ten"]).forEach(function(k){$(k).addEventListener("input",function(){clearTimeout(tmr);tmr=setTimeout(run,300)})});
 $("sort").addEventListener("change",run);
 $("kw").addEventListener("input",function(){clearTimeout(tmr);tmr=setTimeout(run,300)});
-$("ten").addEventListener("change",run);$("ind").addEventListener("change",run);$("ceilU").addEventListener("change",run);
+$("ten").addEventListener("change",run);$("ind").addEventListener("change",run);
 $("go").addEventListener("click",function(){run();$("info").scrollIntoView({behavior:"smooth"})});
 $("reset").addEventListener("click",function(){$("q").value="";$("kw").value="";NUMS.forEach(function(k){$(k).value=""});SELS.forEach(function(k){$(k).selectedIndex=0});
   document.querySelectorAll(".chip.on").forEach(function(c){c.classList.remove("on")});[].forEach.call($("sr").children,function(c,i){c.classList.toggle("on",i===0)});run()});

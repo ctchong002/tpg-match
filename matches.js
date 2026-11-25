@@ -74,7 +74,7 @@
     var row = { kind: st.kind, category: st.cat, title: $("r-title").value.trim() || null, property_types: st.types.slice(), areas: st.areas.slice(),
       price_min: num("r-pmin"), price_max: num("r-pmax"), built_up_min: num("r-bmin"), built_up_max: num("r-bmax"),
       land_min: landVal("r-lmin"), land_max: landVal("r-lmax"), client_note: $("r-note").value.trim() || null,
-      power_min: ind ? num("r-amp") : null, ceiling_min_ft: ind ? num("r-ceil") : null, floor_load_min: ind ? num("r-fl") : null,
+      power_min: ind ? num("r-amp") : null, ceiling_min_m: ind ? num("r-ceil") : null, ceiling_min_ft: null, floor_load_min: ind ? num("r-fl") : null,
       zonings: ind ? st.zon.slice() : [], tenure: (ind ? $("r-ten-i").value : $("r-ten-r").value) || null,
       bedrooms_min: !ind && $("r-bed").value !== "" ? +$("r-bed").value : null, furnishings: ind ? [] : st.fur.slice(), lot_types: ind ? [] : st.lot.slice() };
     if ([row.price_min, row.price_max, row.built_up_min, row.built_up_max, row.land_min, row.land_max].some(function (v) { return v != null && (isNaN(v) || v < 0); })) return msg("数字不对 Invalid number");
@@ -92,9 +92,9 @@
     var rent = q.kind === "WTR", p = [q.property_types.join(" / "), q.areas.join(", ")];
     var pr = rng(q.price_min, q.price_max, money); if (pr) p.push((rent ? "月租 " : "价钱 ") + pr);
     var bu = rng(q.built_up_min, q.built_up_max, fmt); if (bu) p.push("BU " + bu + " sf");
-    var ld = rng(q.land_min, q.land_max, landTxt); if (ld) p.push("Land " + ld);
+    var ld = rng(q.land_min, q.land_max, landTxt); if (ld) p.push("Land Area " + ld);
     if (q.power_min != null) p.push("≥ " + fmt(q.power_min) + "A");
-    if (q.ceiling_min_ft != null) p.push("Ceiling ≥ " + fmt(q.ceiling_min_ft) + "ft");
+    if (q.ceiling_min_m != null) p.push("Ceiling ≥ " + fmt(q.ceiling_min_m) + "m");
     if (q.floor_load_min != null) p.push("Floor ≥ " + fmt(q.floor_load_min) + "kN/m²");
     if (q.zonings && q.zonings.length) p.push(q.zonings.map(function (z) { return ZON[z]; }).join("/"));
     if (q.tenure) p.push(TEN[q.tenure]);
@@ -131,7 +131,7 @@
       st.zon = (q.zonings || []).slice(); st.fur = (q.furnishings || []).slice(); st.lot = (q.lot_types || []).slice(); st.editing = q.id;
       var set = function (id, v) { $(id).value = v == null ? "" : v; };
       set("r-title", q.title); set("r-pmin", q.price_min); set("r-pmax", q.price_max); set("r-bmin", q.built_up_min); set("r-bmax", q.built_up_max);
-      $("r-lunit").value = "sf"; set("r-lmin", q.land_min); set("r-lmax", q.land_max); set("r-amp", q.power_min); set("r-ceil", q.ceiling_min_ft); set("r-fl", q.floor_load_min);
+      $("r-lunit").value = "sf"; set("r-lmin", q.land_min); set("r-lmax", q.land_max); set("r-amp", q.power_min); set("r-ceil", q.ceiling_min_m != null ? q.ceiling_min_m : (q.ceiling_min_ft != null ? Math.round(q.ceiling_min_ft * 0.3048 * 10) / 10 : null)); set("r-fl", q.floor_load_min);
       set("r-ten-i", q.tenure); set("r-ten-r", q.tenure); set("r-bed", q.bedrooms_min); set("r-note", q.client_note);
       $("req-save").textContent = "更新 Update"; $("req-cancel").hidden = false; $("new-req-title").textContent = "✏️ 修改需求 Edit requirement";
       $("new-req-box").open = true; renderForm(); $("new-req-box").scrollIntoView({ behavior: "smooth" });
@@ -141,8 +141,8 @@
   // ---------- matches + inbox ----------
   function specs(l) {
     var s = [];
-    if (l.built_up) s.push("BU " + fmt(l.built_up) + " sf"); if (l.land) s.push("Land " + landTxt(l.land));
-    if (l.amp) s.push(fmt(l.amp) + "A"); if (l.ceiling_ft) s.push("Ceiling " + fmt(l.ceiling_ft) + "ft"); if (l.floor_load) s.push(fmt(l.floor_load) + "kN/m²");
+    if (l.built_up) s.push("BU " + fmt(l.built_up) + " sf"); if (l.land) s.push("Land Area " + landTxt(l.land));
+    if (l.amp) s.push(fmt(l.amp) + "A"); var cm = l.ceiling_m != null ? l.ceiling_m : (l.ceiling_ft != null ? Math.round(l.ceiling_ft * 0.3048 * 10) / 10 : null); if (cm) s.push("Ceiling " + fmt(cm) + "m"); if (l.floor_load) s.push(fmt(l.floor_load) + "kN/m²");
     if (l.zoning) s.push(ZON[l.zoning]); if (l.bedrooms != null) s.push(l.bedrooms === 0 ? "Studio" : l.bedrooms + " 房");
     if (l.furnishing) s.push(FUR[l.furnishing]); if (l.tenure) s.push(TEN[l.tenure]); if (l.lot_type) s.push(LOT[l.lot_type]);
     return s.join(" · ");
