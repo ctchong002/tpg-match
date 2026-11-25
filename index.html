@@ -6,7 +6,7 @@
 <meta name="robots" content="noindex,nofollow">
 <title>TPG Pillar's AI</title>
 <meta name="description" content="The Pillars Group 内部盘源与配对平台">
-<meta name="theme-color" content="#0f3d6e">
+<meta name="theme-color" content="#000000">
 <link rel="icon" href="favicon.ico" sizes="any">
 <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32.png">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
@@ -23,14 +23,19 @@
 <body>
 <div id="boot" class="center">
   <div class="boot-inner">
-    <img class="boot-logo" src="assets/logo-navy.png" alt="The Pillars Group">
-    <div>载入中… Loading…</div>
+    <div class="logo-panel">
+      <img class="boot-logo" src="assets/logo-white.png" alt="The Pillars Group">
+    </div>
+    <div class="boot-msg">载入中… Loading…</div>
   </div>
 </div>
 
 <!-- login -->
 <section id="login" class="card center-card" hidden>
-  <img class="login-logo" src="assets/logo-navy.png" alt="The Pillars Group">
+  <div class="logo-panel">
+    <img class="login-logo" src="assets/logo-white.png" alt="The Pillars Group">
+  </div>
+  <div class="center-card-body">
   <h1>TPG Pillar's AI</h1>
   <p class="muted">只限已授权的 email 登录 · Authorised emails only</p>
   <form id="f-email">
@@ -44,14 +49,19 @@
     <button class="link" type="button" id="back">换一个 email</button>
   </form>
   <p id="login-msg" class="msg"></p>
+  </div>
 </section>
 
 <!-- blocked -->
 <section id="blocked" class="card center-card" hidden>
-  <img class="login-logo" src="assets/logo-navy.png" alt="The Pillars Group">
+  <div class="logo-panel">
+    <img class="login-logo" src="assets/logo-white.png" alt="The Pillars Group">
+  </div>
+  <div class="center-card-body">
   <h1>没有权限 No access</h1>
   <p id="blocked-msg">这个帐号没有被授权或已被停用，请联系管理员。This account is not authorised or has been deactivated.</p>
   <button class="btn" id="out2">登出 Log out</button>
+  </div>
 </section>
 
 <!-- app -->
