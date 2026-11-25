@@ -40,7 +40,8 @@
     <div class="sec" data-k="amp"><button type="button" class="sh">Power 电 (amp)<span class="sv"></span><span class="ar">▼</span></button><div class="sb"><div class="mm"><input id="minAmp" type="number" inputmode="numeric" placeholder="No Min" aria-label="No Min"><span class="dash">–</span><input id="maxAmp" type="number" inputmode="numeric" placeholder="No Max" aria-label="No Max"></div></div></div>
     <div class="sec" data-k="ten"><button type="button" class="sh">Tenure 地契<span class="sv"></span><span class="ar">▼</span></button><div class="sb"><div class="fld"><select id="ten" aria-label="Tenure"><option value="">不限 Any</option><option value="F">Freehold 永久</option><option value="L">Leasehold 租赁</option></select></div></div></div>
     <div class="sec" data-k="kw"><button type="button" class="sh">Keywords 关键字<span class="sv"></span><span class="ar">▼</span></button><div class="sb"><div class="fld"><input id="kw" type="search" placeholder="e.g. gas, sprinkler, crane, 角头" autocomplete="off"></div><div class="hint">每个字都要在盘的原文里出现 All words must appear in the post.</div></div></div>
-    <div class="sec" data-k="mo"><button type="button" class="sh">Ceiling / Loading / Industry 楼高 · 载重 · 类别<span class="sv"></span><span class="ar">▼</span></button><div class="sb"><div class="mm" style="grid-template-columns:1fr 1fr"><label class="fld"><span>楼高最少 Min ceiling (m)</span><input id="minCeil" type="number" inputmode="decimal" placeholder="e.g. 8"></label><label class="fld"><span>载重 最少 Min loading (kN/m²)</span><input id="minFl" type="number" inputmode="numeric"></label><label class="fld"><span>工业类别 Industry</span><select id="ind"><option value="">不限 Any</option><option value="L">Light</option><option value="M">Medium</option><option value="H">Heavy</option></select></label></div></div></div>
+    <div class="sec" data-k="ind"><button type="button" class="sh">工业类别 Industry<span class="sv"></span><span class="ar">▼</span></button><div class="sb"><div class="chips" id="inds"></div><div class="hint">可同时选一个、两个或三个；不选 = 不限。Pick one, two or all three; none means any.</div></div></div>
+    <div class="sec" data-k="mo"><button type="button" class="sh">Ceiling / Loading 楼高 · 载重<span class="sv"></span><span class="ar">▼</span></button><div class="sb"><div class="mm" style="grid-template-columns:1fr 1fr"><label class="fld"><span>楼高最少 Min ceiling (m)</span><input id="minCeil" type="number" inputmode="decimal" placeholder="e.g. 8"></label><label class="fld"><span>载重 最少 Min loading (kN/m²)</span><input id="minFl" type="number" inputmode="numeric"></label></div></div></div>
     <div class="sec" data-k="gr"><button type="button" class="sh">来源群 Group<span class="sv"></span><span class="ar">▼</span></button><div class="sb"><div class="chips" id="groups"></div></div></div>
   <div class="acts"><button type="button" id="reset">重设 Reset</button><button type="button" class="pri" id="go">看结果 Show results</button></div>
   </div>
@@ -99,11 +100,13 @@ $("types").addEventListener("click",function(e){var b=e.target.closest(".chip");
 typeChips("");
 $("cat").addEventListener("click",function(e){var b=e.target.closest("button");if(!b)return;[].forEach.call($("cat").children,function(c){c.classList.toggle("on",c===b)});typeChips(b.dataset.v);run()});
 chips("groups",G.map(function(g){return [g,g+" · "+GN[g]]}));
+var IC={L:0,M:0,H:0};L.forEach(function(x){if(x.ind==="L"||x.ind==="M"||x.ind==="H")IC[x.ind]++});
+chips("inds",[["L","Light 轻工业 "+fmtN(IC.L)],["M","Medium 中工业 "+fmtN(IC.M)],["H","Heavy 重工业 "+fmtN(IC.H)]]);
 $("sr").addEventListener("click",function(e){var b=e.target.closest("button");if(!b)return;[].forEach.call($("sr").children,function(c){c.classList.toggle("on",c===b)});run()});
 function on(el){return [].map.call($(el).querySelectorAll(".chip.on"),function(b){return b.dataset.v})}
 function num(id){var v=parseFloat($(id).value);return isNaN(v)?null:v}
-var NUMS=["minAmp","maxAmp","minBu","maxBu","minLd","maxLd","minCeil","minFl","minP","maxP"],SELS=["ind","ten","sort"];
-function state(){var s={cat:$("cat").querySelector(".on").dataset.v,q:$("q").value.trim(),sr:$("sr").querySelector(".on").dataset.v,ar:on("areas"),ty:on("types"),gr:on("groups"),kw:$("kw").value.trim()};
+var NUMS=["minAmp","maxAmp","minBu","maxBu","minLd","maxLd","minCeil","minFl","minP","maxP"],SELS=["ten","sort"];
+function state(){var s={cat:$("cat").querySelector(".on").dataset.v,q:$("q").value.trim(),sr:$("sr").querySelector(".on").dataset.v,ar:on("areas"),ty:on("types"),gr:on("groups"),ind:on("inds"),kw:$("kw").value.trim()};
   NUMS.forEach(function(k){s[k]=num(k)});SELS.forEach(function(k){s[k]=$(k).value});return s}
 function price(x,sr){if(sr==="r")return x.rent||0;if(sr==="s")return x.sale||0;return x.rent||x.sale||0}
 function match(x,s){
@@ -124,7 +127,7 @@ function match(x,s){
   if(s.maxP!=null){var p=price(x,s.sr);if(!(p&&p<=s.maxP))return false}
   if(s.minP!=null){var p2=price(x,s.sr);if(!(p2&&p2>=s.minP))return false}
   if(s.kw){if(x.kt==null)x.kt=(x.s+" "+x.txt).toLowerCase();var kws=s.kw.toLowerCase().split(/[\s,，]+/);for(var j=0;j<kws.length;j++){if(kws[j]&&x.kt.indexOf(kws[j])<0)return false}}
-  if(s.ind&&x.ind!==s.ind)return false;
+  if(s.ind.length&&s.ind.indexOf(x.ind)<0)return false;
   if(s.ten&&x.ten!==s.ten)return false;
   if(s.q&&s.ph){if(x.s.indexOf(s.ph)<0)return false}
   else if(s.q){var ws=s.q.toLowerCase().split(/\s+/);for(var i=0;i<ws.length;i++){var w=ws[i];if(/^0\d{8,}$/.test(w))w="6"+w;if(x.s.indexOf(w)<0)return false}}
@@ -214,7 +217,8 @@ function rng(a,b,u){a=num(a);b=num(b);if(a==null&&b==null)return "";return (a!=n
 function listLab(a){return a.length<=3?a.join("、"):a.slice(0,3).join("、")+" 等 "+a.length+" 个"}
 function secLab(){var v={ar:listLab(on("areas")),bu:rng("minBu","maxBu"," sf"),ld:rng("minLd","maxLd"," sf"),amp:rng("minAmp","maxAmp"," A"),
     ten:$("ten").value?$("ten").options[$("ten").selectedIndex].text:"",kw:$("kw").value.trim(),
-    mo:[num("minCeil")!=null?"≥"+num("minCeil")+"m":"",num("minFl")!=null?"≥"+num("minFl")+"kN":"",$("ind").value?$("ind").options[$("ind").selectedIndex].text:""].filter(Boolean).join(" · "),
+    ind:listLab(on("inds").map(function(v){return {L:"Light",M:"Medium",H:"Heavy"}[v]||v})),
+    mo:[num("minCeil")!=null?"≥"+num("minCeil")+"m":"",num("minFl")!=null?"≥"+num("minFl")+"kN":""].filter(Boolean).join(" · "),
     gr:listLab(on("groups"))};
   [].forEach.call(document.querySelectorAll(".sec"),function(el){var t=v[el.dataset.k]||"";el.querySelector(".sv").textContent=t||"Any";el.classList.toggle("act",!!t);
     el.querySelector(".sh").setAttribute("aria-expanded",el.classList.contains("open"))})}
@@ -228,6 +232,7 @@ function stickyChips(){
   (s.ar||[]).slice(0,4).forEach(function(a){bits.push(a)});
   if(s.minAmp!=null)bits.push("≥"+s.minAmp+"A");
   if(s.minCeil!=null)bits.push("≥"+s.minCeil+"m");
+  (s.ind||[]).forEach(function(v){bits.push({L:"Light",M:"Medium",H:"Heavy"}[v]||v)});
   if(s.q)bits.push(s.q);
   el.innerHTML=bits.map(function(x){return '<span class="chip on">'+esc(x)+"</span>"}).join("");
 }
@@ -237,19 +242,19 @@ function run(){var s=state();secLab();stickyChips();
   res=L.filter(function(x){return match(x,s)});srt(s);shown=0;
   $("cnt").textContent="找到 "+fmtN(res.length)+" 个盘";$("go").textContent="看 "+fmtN(res.length)+" 个结果 Show results";render(false);save(s)}
 function save(s){var p=[];if(s.q)p.push("q="+encodeURIComponent(s.q));if(s.kw)p.push("kw="+encodeURIComponent(s.kw));if(s.sr)p.push("sr="+s.sr);
-  ["ar","ty","gr"].forEach(function(k){if(s[k].length)p.push(k+"="+encodeURIComponent(s[k].join(",")))});
+  ["ar","ty","gr","ind"].forEach(function(k){if(s[k].length)p.push(k+"="+encodeURIComponent(s[k].join(",")))});
   NUMS.forEach(function(k){if(s[k]!=null)p.push(k+"="+s[k])});SELS.forEach(function(k){var d=$(k).options[0].value;if(s[k]!==d)p.push(k+"="+s[k])});
   history.replaceState(null,"",p.length?"#"+p.join("&"):location.pathname+location.search)}
 function load(){var h=location.hash.slice(1);if(!h)return;h.split("&").forEach(function(kv){var i=kv.indexOf("="),k=kv.slice(0,i),v=decodeURIComponent(kv.slice(i+1));
   if(k==="q")$("q").value=v;else if(k==="kw")$("kw").value=v;else if(k==="sr")[].forEach.call($("sr").children,function(c){c.classList.toggle("on",c.dataset.v===v)});
-  else if(k==="ar"||k==="ty"||k==="gr"){var el={ar:"areas",ty:"types",gr:"groups"}[k],vs=v.split(",");[].forEach.call($(el).children,function(c){if(vs.indexOf(c.dataset.v)>=0)c.classList.add("on")})}
+  else if(k==="ar"||k==="ty"||k==="gr"||k==="ind"){var el={ar:"areas",ty:"types",gr:"groups",ind:"inds"}[k],vs=v.split(",");[].forEach.call($(el).children,function(c){if(vs.indexOf(c.dataset.v)>=0)c.classList.add("on")})}
   else if($(k))$(k).value=v});}
 $("q").addEventListener("input",function(){clearTimeout(tmr);tmr=setTimeout(run,200)});
 $("q").addEventListener("keydown",function(e){if(e.key==="Enter"){$("q").blur();run()}});
-NUMS.concat(["ind","ten"]).forEach(function(k){$(k).addEventListener("input",function(){clearTimeout(tmr);tmr=setTimeout(run,300)})});
+NUMS.concat(["ten"]).forEach(function(k){$(k).addEventListener("input",function(){clearTimeout(tmr);tmr=setTimeout(run,300)})});
 $("sort").addEventListener("change",run);
 $("kw").addEventListener("input",function(){clearTimeout(tmr);tmr=setTimeout(run,300)});
-$("ten").addEventListener("change",run);$("ind").addEventListener("change",run);
+$("ten").addEventListener("change",run);
 $("go").addEventListener("click",function(){run();var fb=$("filt-body"),tg=$("filt-toggle");if(fb)fb.classList.remove("open");if(tg){tg.setAttribute("aria-expanded","false");tg.classList.remove("on")}$("info").scrollIntoView({behavior:"smooth"})});
 if($("filt-toggle"))$("filt-toggle").addEventListener("click",function(){var on=$("filt-body").classList.toggle("open");this.setAttribute("aria-expanded",on);this.classList.toggle("on",on)});
 $("reset").addEventListener("click",function(){$("q").value="";$("kw").value="";NUMS.forEach(function(k){$(k).value=""});SELS.forEach(function(k){$(k).selectedIndex=0});

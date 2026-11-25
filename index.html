@@ -7,9 +7,9 @@
 <title>TPG Pillar's AI</title>
 <meta name="description" content="The Pillars Group 内部盘源与配对平台">
 <meta name="theme-color" content="#000000">
-<link rel="icon" href="favicon.ico" sizes="any">
-<link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32.png">
-<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32.png">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <meta property="og:title" content="TPG Pillar's AI">
 <meta property="og:description" content="The Pillars Group 内部盘源与配对平台">
 <meta property="og:image" content="https://ai.thepillarsgroup.com/assets/og-image.jpg">
@@ -26,7 +26,7 @@
 <div id="boot" class="center">
   <div class="boot-inner">
     <div class="logo-panel">
-      <img class="boot-logo" src="assets/logo-gold.jpg" alt="The Pillars Group">
+      <img class="boot-logo" src="/assets/logo-gold.jpg" alt="The Pillars Group">
     </div>
     <div class="boot-msg">载入中… Loading…</div>
   </div>
@@ -35,7 +35,7 @@
 <!-- login -->
 <section id="login" class="card center-card" hidden>
   <div class="logo-panel">
-    <img class="login-logo" src="assets/logo-gold.jpg" alt="The Pillars Group">
+    <img class="login-logo" src="/assets/logo-gold.jpg" alt="The Pillars Group">
   </div>
   <div class="center-card-body">
   <h1>TPG Pillar's AI</h1>
@@ -59,7 +59,7 @@
 <!-- blocked -->
 <section id="blocked" class="card center-card" hidden>
   <div class="logo-panel">
-    <img class="login-logo" src="assets/logo-gold.jpg" alt="The Pillars Group">
+    <img class="login-logo" src="/assets/logo-gold.jpg" alt="The Pillars Group">
   </div>
   <div class="center-card-body">
   <h1>没有权限 No access</h1>
@@ -72,7 +72,7 @@
 <section id="app" hidden>
   <nav class="topbar">
     <div class="brand">
-      <img class="brand-icon" src="assets/logo-icon-gold.jpg" alt="" width="32" height="32">
+      <img class="brand-icon" src="/assets/logo-icon-gold.jpg" alt="" width="32" height="32">
       <span class="brand-name">TPG Pillar's AI</span>
     </div>
     <div class="tabs-top" id="tabs">
@@ -88,7 +88,7 @@
 
   <div id="pane-matches" class="pane scroll" hidden>
     <div class="wrap">
-      <h2>🎯 我的 WTB / WTR <small class="muted">（有效 30 天 valid 30 days · 只有你看得到 only you）</small></h2>
+      <h2>🎯 我的 WTB / WTR <small class="muted">Valid 30 Days</small></h2>
       <div id="reqs" class="list"></div>
 
       <details class="card" id="new-req-box" open>
@@ -108,7 +108,7 @@
             <label>楼高最少 Ceiling min (m)<input id="r-ceil" type="number" inputmode="decimal" min="0" step="any" placeholder="e.g. 8"></label>
             <label>载重最少 Floor load min (kN/m²)<input id="r-fl" type="number" inputmode="decimal" min="0" step="any"></label>
             <label>地契 Tenure<select id="r-ten-i"><option value="">不限 Any</option><option value="freehold">Freehold</option><option value="leasehold">Leasehold</option></select></label>
-            <div class="full"><label style="margin-bottom:0">工业类别 Zoning</label><div class="chips" id="r-zon"></div></div>
+            <div class="full"><label style="margin-bottom:0">工业类别 Industry <small class="muted">(可多选；不选 = 不限)</small></label><div class="chips" id="r-zon"></div></div>
           </div></fieldset>
           <fieldset class="fs full" id="fs-res" hidden><legend>住宅条件 Residential (选填 optional)</legend><div class="grid">
             <label>房间最少 Bedrooms min<select id="r-bed"><option value="">不限 Any</option><option value="0">Studio+</option><option value="1">1+</option><option value="2">2+</option><option value="3">3+</option><option value="4">4+</option><option value="5">5+</option></select></label>
