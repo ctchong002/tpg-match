@@ -1,0 +1,27 @@
+/* My Matches tab (WTB/WTR form, requirement list, match cards) */
+.seg{display:flex;gap:0;border:1px solid #cdd5df;border-radius:10px;overflow:hidden;margin-top:4px}
+.seg button{flex:1;border:0;background:#fff;padding:10px 6px;font:inherit;cursor:pointer;color:#334}
+.seg button+button{border-left:1px solid #cdd5df}
+.seg button.on{background:#000;color:#e0b784;font-weight:600}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
+.chip{border:1px solid #cdd5df;background:#fff;border-radius:16px;padding:5px 10px;font:inherit;font-size:13px;cursor:pointer;color:#223}
+.chip small{color:#889;margin-left:3px}
+.chip.on{background:#000;border-color:#000;color:#e0b784}
+.chip.on small{color:#bfa57a}
+.chip.x::after{content:" ✕";opacity:.7}
+.area-sug{max-height:180px;overflow:auto;border:1px solid #e3e8ef;border-radius:8px;margin-top:4px;background:#fff}
+.area-sug button{display:flex;justify-content:space-between;width:100%;border:0;background:none;padding:8px 10px;font:inherit;font-size:14px;cursor:pointer;text-align:left}
+.area-sug button:hover{background:#f3f5f8}.area-sug small{color:#889}
+.fs{border:0;padding:0;margin:6px 0 0}
+.fs legend{font-size:13px;font-weight:600;color:#111;padding:10px 0 0}
+.hint{background:#fbf6ec;border:1px solid #eedfbf;border-radius:8px;padding:8px 10px;font-size:13px;color:#5a4520;margin:10px 0 4px}
+.unit{display:flex;gap:6px;align-items:flex-end}.unit select{width:auto;flex:0 0 auto}
+.req .acts{margin-top:8px;display:flex;flex-wrap:wrap;gap:4px}
+.req .crit{font-size:13px;color:#556;margin-top:4px}
+.mcard .p{font-weight:700;font-size:16px;margin-top:2px}
+.mcard .sp{font-size:13px;color:#445;margin-top:2px}
+.mcard details{margin-top:6px}.mcard summary{cursor:pointer;font-size:13px;color:#334}
+.mcard pre{white-space:pre-wrap;word-break:break-word;background:#f7f7f5;border-radius:8px;padding:8px 10px;font:13px/1.5 inherit;margin:6px 0 0}
+.wa{display:inline-block;background:#000;color:#e0b784;border-radius:12px;padding:2px 10px;font-size:12px;text-decoration:none;margin-left:4px}
+#new-req-box summary{cursor:pointer}
+.pair{display:flex;gap:6px;align-items:center;margin-top:4px}.pair input{margin-top:0;min-width:0;flex:1}.pair select{margin-top:0;width:auto;flex:0 0 auto}.pair i{font-style:normal;color:#889}

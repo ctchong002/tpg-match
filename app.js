@@ -55,45 +55,8 @@
   }
   $("tabs").addEventListener("click", function (e) { var b = e.target.closest("button[data-tab]"); if (b) openTab(b.dataset.tab); });
 
-  // ---------- My Matches ----------
-  function list(s) { return s.split(/[,，]/).map(function (x) { return x.trim(); }).filter(Boolean); }
-  function num(id) { var v = $(id).value; return v === "" ? null : +v; }
-  function daysLeft(d) { return Math.ceil((new Date(d) - Date.now()) / 864e5); }
-  function rng(a, b, u) { return a == null && b == null ? "" : (a != null ? a.toLocaleString() : "0") + " – " + (b != null ? b.toLocaleString() : "∞") + u; }
-  function loadMatches() {
-    sb.from("notifications").select("id,kind,title,body,created_at,read_at").order("created_at", { ascending: false }).limit(50).then(function (r) {
-      if (r.error || !r.data.length) return;
-      $("inbox").innerHTML = r.data.map(function (n) { return "<div class='item'><div class='t'>" + (n.read_at ? "" : "🔵 ") + esc(n.title) + "</div><div>" + esc(n.body) + "</div><small class='muted'>" + new Date(n.created_at).toLocaleString() + "</small></div>"; }).join("");
-    });
-    sb.from("requirements").select("*").order("created_at", { ascending: false }).then(function (r) {
-      if (r.error) { $("reqs").innerHTML = "<p class='msg'>" + esc(errText(r.error)) + "</p>"; return; }
-      if (!r.data.length) { $("reqs").innerHTML = "<p class='muted'>还没有需求。No requirements yet.</p>"; return; }
-      $("reqs").innerHTML = r.data.map(function (q) {
-        var dl = daysLeft(q.expires_at), exp = dl <= 0 || q.status !== "active";
-        return "<div class='item'><div class='t'><span class='tag'>" + q.kind + "</span><span class='tag'>" + (q.category === "industry" ? "工厂" : "住宅") + "</span>" + esc(q.title || "(无标题)") +
-          " <span class='tag " + (exp ? "off" : dl <= 5 ? "warn" : "") + "'>" + (q.status !== "active" ? q.status : dl <= 0 ? "已过期 expired" : "剩 " + dl + " 天") + "</span></div>" +
-          "<div class='muted'>" + esc([q.property_types.join(", "), q.areas.join(", "), rng(q.price_min, q.price_max, " RM"), rng(q.built_up_min, q.built_up_max, " sf BU"), rng(q.land_min, q.land_max, " sf land"), q.keywords].filter(Boolean).join(" · ")) + "</div>" +
-          (q.client_note ? "<div><small>📝 " + esc(q.client_note) + "</small></div>" : "") +
-          "<div style='margin-top:6px'><button class='btn sm' data-renew='" + q.id + "'>续 30 天 Renew</button><button class='btn sm red' data-del='" + q.id + "'>删除 Delete</button></div></div>";
-      }).join("");
-    });
-  }
-  $("reqs").addEventListener("click", function (e) {
-    var b = e.target.closest("button"); if (!b) return;
-    if (b.dataset.del && confirm("删除这个需求？Delete?")) sb.from("requirements").delete().eq("id", b.dataset.del).then(loadMatches);
-    if (b.dataset.renew) sb.from("requirements").update({ status: "active", expires_at: new Date(Date.now() + 30 * 864e5).toISOString() }).eq("id", b.dataset.renew).then(loadMatches);
-  });
-  $("f-req").addEventListener("submit", function (ev) {
-    ev.preventDefault();
-    var row = { kind: $("r-kind").value, category: $("r-cat").value, title: $("r-title").value.trim() || null,
-      property_types: list($("r-types").value), areas: list($("r-areas").value),
-      price_min: num("r-pmin"), price_max: num("r-pmax"), built_up_min: num("r-bmin"), built_up_max: num("r-bmax"),
-      land_min: num("r-lmin"), land_max: num("r-lmax"), keywords: $("r-kw").value.trim() || null, client_note: $("r-note").value.trim() || null };
-    sb.from("requirements").insert(row).then(function (r) {
-      if (r.error) return msg("req-msg", errText(r.error));
-      msg("req-msg", "已保存 Saved ✓", true); $("f-req").reset(); loadMatches();
-    });
-  });
+  // ---------- My Matches (matches.js) ----------
+  function loadMatches() { if (TPG.loadMatches) TPG.loadMatches(); }
 
   // ---------- Agents (owner/admin) ----------
   var agents = [];

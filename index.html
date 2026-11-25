@@ -19,6 +19,7 @@
 <meta name="twitter:title" content="TPG Pillar's AI">
 <meta name="twitter:image" content="https://ai.thepillarsgroup.com/assets/og-image.jpg">
 <link rel="stylesheet" href="portal.css">
+<link rel="stylesheet" href="matches.css">
 </head>
 <body>
 <div id="boot" class="center">
@@ -84,34 +85,45 @@
 
   <div id="pane-matches" class="pane scroll" hidden>
     <div class="wrap">
-      <h2>📥 通知 Inbox</h2>
-      <div id="inbox" class="list"><p class="muted">还没有通知。No notifications yet.</p></div>
-
-      <h2>🎯 我的 WTB / WTR <small class="muted">（有效 30 天 valid 30 days）</small></h2>
+      <h2>🎯 我的 WTB / WTR <small class="muted">（有效 30 天 valid 30 days · 只有你看得到 only you）</small></h2>
       <div id="reqs" class="list"></div>
 
       <details class="card" id="new-req-box" open>
-        <summary><b>➕ 新增需求 New requirement</b></summary>
-        <form id="f-req" class="grid">
-          <label>类型 Kind<select id="r-kind"><option value="WTR">WTR 想租 (want to rent)</option><option value="WTB">WTB 想买 (want to buy)</option></select></label>
-          <label>类别 Category<select id="r-cat"><option value="industry">工厂/商业/地皮 Industry</option><option value="residential">住宅 Residential</option></select></label>
-          <label class="full">标题 Title<input id="r-title" placeholder="e.g. Senai 工厂 5000sf 200A"></label>
-          <label class="full">物业类型 Property types <small>(逗号分开 comma separated)</small><input id="r-types" placeholder="e.g. Semi-D factory, Detached factory"></label>
-          <label class="full">地区 Areas <small>(逗号分开)</small><input id="r-areas" placeholder="e.g. Senai, Kulai, Skudai"></label>
-          <label>价钱 Min RM<input id="r-pmin" type="number" inputmode="numeric"></label>
-          <label>价钱 Max RM<input id="r-pmax" type="number" inputmode="numeric"></label>
-          <label>Built-up Min sf<input id="r-bmin" type="number" inputmode="numeric"></label>
-          <label>Built-up Max sf<input id="r-bmax" type="number" inputmode="numeric"></label>
-          <label>Land Min sf<input id="r-lmin" type="number" inputmode="numeric"></label>
-          <label>Land Max sf<input id="r-lmax" type="number" inputmode="numeric"></label>
-          <label class="full">关键词 Keywords<input id="r-kw" placeholder="e.g. 200A, 3 phase, crane"></label>
-          <label class="full">客户备注 Client note <small>(只有你看得到 only you)</small><textarea id="r-note" rows="2"></textarea></label>
-          <div class="full"><button class="btn" type="submit">保存 Save</button> <span id="req-msg" class="msg"></span></div>
+        <summary><b id="new-req-title">➕ 新增需求 New requirement</b></summary>
+        <div class="hint">只填客户真正要的条件。填了的条件，新盘一定要<b>写明而且符合</b>才会通知你；没填的不看。只通知库里以前没有的新单位。<br><small>Fill only what the client needs. A new listing must state and meet every filled field.</small></div>
+        <form id="f-req" class="grid" novalidate>
+          <label>类型 Kind<div class="seg" id="r-kind"><button type="button" data-v="WTR" class="on">WTR 想租</button><button type="button" data-v="WTB">WTB 想买</button></div></label>
+          <label>类别 Category<div class="seg" id="r-cat"><button type="button" data-v="industry" class="on">🏭 工厂/商业</button><button type="button" data-v="residential">🏠 住宅</button></div></label>
+          <div class="full"><label style="margin-bottom:0">物业类型 Property type <small class="muted">(可多选 · 必填)</small></label><div class="chips" id="r-types"></div></div>
+          <div class="full"><label style="margin-bottom:0">地区 Areas <small class="muted">(可多选 · 必填)</small><input id="r-area-q" placeholder="🔍 打地区名字 type an area, e.g. Senai" autocomplete="off"></label>
+            <div class="chips" id="r-areas-sel"></div><div class="area-sug" id="r-area-sug"></div></div>
+          <label class="full" id="l-price"><span>月租 Monthly rent (RM)</span><span class="pair"><input id="r-pmin" type="number" inputmode="numeric" min="0" placeholder="Min"><i>–</i><input id="r-pmax" type="number" inputmode="numeric" min="0" placeholder="Max"></span></label>
+          <label class="full"><span>屋身 Built-up (sf)</span><span class="pair"><input id="r-bmin" type="number" inputmode="numeric" min="0" placeholder="Min"><i>–</i><input id="r-bmax" type="number" inputmode="numeric" min="0" placeholder="Max"></span></label>
+          <label class="full"><span>土地 Land</span><span class="pair"><input id="r-lmin" type="number" inputmode="decimal" min="0" step="any" placeholder="Min"><i>–</i><input id="r-lmax" type="number" inputmode="decimal" min="0" step="any" placeholder="Max"><select id="r-lunit"><option value="sf">sf</option><option value="acre">acre</option></select></span></label>
+          <fieldset class="fs full" id="fs-ind"><legend>工业条件 Industrial (选填 optional)</legend><div class="grid">
+            <label>电力最少 Power min (A)<input id="r-amp" type="number" inputmode="numeric" min="0" placeholder="e.g. 200"></label>
+            <label>楼高最少 Ceiling min (ft)<input id="r-ceil" type="number" inputmode="decimal" min="0" step="any" placeholder="e.g. 25"></label>
+            <label>载重最少 Floor load min (kN/m²)<input id="r-fl" type="number" inputmode="decimal" min="0" step="any"></label>
+            <label>地契 Tenure<select id="r-ten-i"><option value="">不限 Any</option><option value="freehold">Freehold</option><option value="leasehold">Leasehold</option></select></label>
+            <div class="full"><label style="margin-bottom:0">工业类别 Zoning</label><div class="chips" id="r-zon"></div></div>
+          </div></fieldset>
+          <fieldset class="fs full" id="fs-res" hidden><legend>住宅条件 Residential (选填 optional)</legend><div class="grid">
+            <label>房间最少 Bedrooms min<select id="r-bed"><option value="">不限 Any</option><option value="0">Studio+</option><option value="1">1+</option><option value="2">2+</option><option value="3">3+</option><option value="4">4+</option><option value="5">5+</option></select></label>
+            <label>地契 Tenure<select id="r-ten-r"><option value="">不限 Any</option><option value="freehold">Freehold</option><option value="leasehold">Leasehold</option></select></label>
+            <div class="full"><label style="margin-bottom:0">家私 Furnishing</label><div class="chips" id="r-fur"></div></div>
+            <div class="full"><label style="margin-bottom:0">地段 Lot type</label><div class="chips" id="r-lot"></div></div>
+          </div></fieldset>
+          <label class="full">标题 Title <small class="muted">(选填)</small><input id="r-title" placeholder="e.g. 客户 A：Senai 工厂"></label>
+          <label class="full">客户备注 Client note <small class="muted">(只有你看得到，不用来配对 not used for matching)</small><textarea id="r-note" rows="2"></textarea></label>
+          <div class="full"><button class="btn" type="submit" id="req-save">保存 Save</button> <button class="btn grey" type="button" id="req-cancel" hidden>取消 Cancel</button> <span id="req-msg" class="msg"></span></div>
         </form>
       </details>
 
       <h2>✨ 配对结果 Matches</h2>
-      <div id="matches" class="list"><p class="muted">配对通知会在下一阶段开通：有新上传、库里以前没有的盘符合你的需求时，这里会出现，并发一封 email。<br>Matching starts in the next phase.</p></div>
+      <div id="match-list" class="list"></div>
+
+      <h2>📥 通知 Inbox</h2>
+      <div id="inbox" class="list"><p class="muted">还没有通知。No notifications yet.</p></div>
     </div>
   </div>
 
@@ -135,6 +147,7 @@
 <script src="config.js"></script>
 <script src="compile.js"></script>
 <script src="portal.js"></script>
+<script src="matches.js"></script>
 <script src="app.js"></script>
 </body>
 </html>
