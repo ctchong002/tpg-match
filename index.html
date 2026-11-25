@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="zh">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow">
+<title>TPG Match 配对系统</title>
+<meta name="theme-color" content="#0f3d6e">
+<link rel="icon" href="industry/icon-192.png">
+<link rel="stylesheet" href="portal.css">
+</head>
+<body>
+<div id="boot" class="center">载入中… Loading…</div>
+
+<!-- login -->
+<section id="login" class="card center-card" hidden>
+  <h1>TPG Match 配对系统</h1>
+  <p class="muted">只限已授权的 email 登录 · Authorised emails only</p>
+  <form id="f-email">
+    <label>Email<input id="email" type="email" required autocomplete="email" placeholder="you@example.com"></label>
+    <button class="btn" type="submit">发送登录码 Send login code</button>
+  </form>
+  <form id="f-code" hidden>
+    <p>登录码 / 登录链接已寄到 <b id="sent-to"></b>。请输入 email 里的 6 位数字，或直接点 email 里的登录链接。<br><small class="muted">We emailed you a code / link.</small></p>
+    <label>6 位数登录码 Code<input id="code" inputmode="numeric" autocomplete="one-time-code" maxlength="10" placeholder="123456"></label>
+    <button class="btn" type="submit">登录 Log in</button>
+    <button class="link" type="button" id="back">换一个 email</button>
+  </form>
+  <p id="login-msg" class="msg"></p>
+</section>
+
+<!-- blocked -->
+<section id="blocked" class="card center-card" hidden>
+  <h1>没有权限 No access</h1>
+  <p id="blocked-msg">这个帐号没有被授权或已被停用，请联系管理员。This account is not authorised or has been deactivated.</p>
+  <button class="btn" id="out2">登出 Log out</button>
+</section>
+
+<!-- app -->
+<section id="app" hidden>
+  <nav class="topbar">
+    <div class="tabs-top" id="tabs">
+      <button data-tab="industry" class="on">🏭 工厂 Industry</button>
+      <button data-tab="residential">🏠 住宅 Residential</button>
+      <button data-tab="matches">🔔 我的配对 My Matches</button>
+      <button data-tab="agents" id="tab-agents" hidden>👥 Agents</button>
+    </div>
+    <div class="who"><span id="who"></span> <button class="link" id="out">登出</button></div>
+  </nav>
+  <iframe id="fr-industry" class="pane" title="Industry"></iframe>
+  <iframe id="fr-residential" class="pane" title="Residential" hidden></iframe>
+
+  <div id="pane-matches" class="pane scroll" hidden>
+    <div class="wrap">
+      <h2>📥 通知 Inbox</h2>
+      <div id="inbox" class="list"><p class="muted">还没有通知。No notifications yet.</p></div>
+
+      <h2>🎯 我的 WTB / WTR <small class="muted">（有效 30 天 valid 30 days）</small></h2>
+      <div id="reqs" class="list"></div>
+
+      <details class="card" id="new-req-box" open>
+        <summary><b>➕ 新增需求 New requirement</b></summary>
+        <form id="f-req" class="grid">
+          <label>类型 Kind<select id="r-kind"><option value="WTR">WTR 想租 (want to rent)</option><option value="WTB">WTB 想买 (want to buy)</option></select></label>
+          <label>类别 Category<select id="r-cat"><option value="industry">工厂/商业/地皮 Industry</option><option value="residential">住宅 Residential</option></select></label>
+          <label class="full">标题 Title<input id="r-title" placeholder="e.g. Senai 工厂 5000sf 200A"></label>
+          <label class="full">物业类型 Property types <small>(逗号分开 comma separated)</small><input id="r-types" placeholder="e.g. Semi-D factory, Detached factory"></label>
+          <label class="full">地区 Areas <small>(逗号分开)</small><input id="r-areas" placeholder="e.g. Senai, Kulai, Skudai"></label>
+          <label>价钱 Min RM<input id="r-pmin" type="number" inputmode="numeric"></label>
+          <label>价钱 Max RM<input id="r-pmax" type="number" inputmode="numeric"></label>
+          <label>Built-up Min sf<input id="r-bmin" type="number" inputmode="numeric"></label>
+          <label>Built-up Max sf<input id="r-bmax" type="number" inputmode="numeric"></label>
+          <label>Land Min sf<input id="r-lmin" type="number" inputmode="numeric"></label>
+          <label>Land Max sf<input id="r-lmax" type="number" inputmode="numeric"></label>
+          <label class="full">关键词 Keywords<input id="r-kw" placeholder="e.g. 200A, 3 phase, crane"></label>
+          <label class="full">客户备注 Client note <small>(只有你看得到 only you)</small><textarea id="r-note" rows="2"></textarea></label>
+          <div class="full"><button class="btn" type="submit">保存 Save</button> <span id="req-msg" class="msg"></span></div>
+        </form>
+      </details>
+
+      <h2>✨ 配对结果 Matches</h2>
+      <div id="matches" class="list"><p class="muted">配对通知会在下一阶段开通：有新上传、库里以前没有的盘符合你的需求时，这里会出现，并发一封 email。<br>Matching starts in the next phase.</p></div>
+    </div>
+  </div>
+
+  <div id="pane-agents" class="pane scroll" hidden>
+    <div class="wrap">
+      <h2>👥 授权名单 Allowlist</h2>
+      <form id="f-agent" class="grid card">
+        <label>Email<input id="a-email" type="email" required></label>
+        <label>名字 Name<input id="a-name"></label>
+        <label>电话 Phone<input id="a-phone"></label>
+        <label>角色 Role<select id="a-role"><option value="agent">Agent</option><option value="admin">Admin</option></select></label>
+        <div class="full"><button class="btn" type="submit">添加 Add</button> <span id="agent-msg" class="msg"></span></div>
+      </form>
+      <input id="a-filter" placeholder="🔍 搜索 email / 名字" class="full-input">
+      <div id="agents" class="list"></div>
+    </div>
+  </div>
+</section>
+
+<script src="vendor/supabase.js"></script>
+<script src="config.js"></script>
+<script src="compile.js"></script>
+<script src="portal.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

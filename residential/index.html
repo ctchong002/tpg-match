@@ -1,0 +1,343 @@
+<!doctype html>
+<html lang="zh">
+<head>
+<meta charset="utf-8">
+<meta name="robots" content="noindex,nofollow">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>TPG 柔佛住宅配对 Residential Finder</title>
+<meta name="description" content="柔佛新山住宅盘源搜索：公寓、排屋、半独立、独立洋房（出售 / 出租） Johor Bahru residential listings">
+<meta name="theme-color" content="#0f3d6e">
+<link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-192.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="住宅配对">
+<link rel="stylesheet" href="style.css">
+<style>
+/* page-local: .chips{display:flex} would otherwise override the hidden attribute */
+.chips[hidden]{display:none!important}
+#chips-ld,#chips-hr{margin-top:10px}
+</style>
+</head>
+<body>
+<header>
+  <h1>TPG 柔佛住宅配对 Residential Finder</h1>
+  <div class="sub" id="cover">资料载入中…</div>
+</header>
+<div class="fp" id="panel"><div>
+  <div class="search"><span class="ico">🔍</span><input id="q" type="search" placeholder="Search location 地区 / 项目" enterkeyhint="search" autocomplete="off"></div>
+  <div class="tabs" id="sr">
+    <button type="button" data-v="" class="on">全部 All</button>
+    <button type="button" data-v="s">Buy 买</button>
+    <button type="button" data-v="r">Rent 租</button>
+  </div>
+
+  <h2>Property type 类型</h2>
+  <div class="tiles" id="cat">
+    <button type="button" class="all on" data-v="">全部类型 All types <small id="n-all"></small></button>
+    <button type="button" class="tile" data-v="ld"><span class="ic">🏠</span>Landed 有地<small id="n-ld"></small></button>
+    <button type="button" class="tile" data-v="hr"><span class="ic">🏢</span>Highrise 高楼<small id="n-hr"></small></button>
+  </div>
+  <div class="chips" id="chips-ld" hidden>
+    <button type="button" class="chip" data-v="lmc">Low Medium Cost</button>
+    <button type="button" class="chip" data-v="terrace">Terrace 排屋</button>
+    <button type="button" class="chip" data-v="cluster">Cluster 田字</button>
+    <button type="button" class="chip" data-v="semi">Semi-D 半独立</button>
+    <button type="button" class="chip" data-v="bung">Bungalow 独立</button>
+  </div>
+  <div class="chips" id="chips-hr" hidden>
+    <button type="button" class="chip" data-v="lmc">Low Medium Cost</button>
+    <button type="button" class="chip" data-v="apt">Apartment</button>
+    <button type="button" class="chip" data-v="townhouse">Townhouse</button>
+  </div>
+
+  <h2>Price 价钱 (RM) <small>租 = 月租 monthly rent</small></h2>
+  <div class="mm"><input id="minP" type="number" inputmode="numeric" placeholder="No Min" aria-label="No Min"><span class="dash">–</span><input id="maxP" type="number" inputmode="numeric" placeholder="No Max" aria-label="No Max"></div>
+
+  <h2>More filters 更多条件</h2>
+  <div class="sec" data-k="ar"><button type="button" class="sh">地区 Area<span class="sv"></span><span class="ar">▼</span></button><div class="sb"><div class="chips" id="areas"></div></div></div>
+  <div class="sec" data-k="bu"><button type="button" class="sh">Built-up 建筑面积 (sf)<span class="sv"></span><span class="ar">▼</span></button><div class="sb"><div class="mm"><input id="bumin" type="number" inputmode="numeric" placeholder="No Min" aria-label="No Min"><span class="dash">–</span><input id="bumax" type="number" inputmode="numeric" placeholder="No Max" aria-label="No Max"></div></div></div>
+  <div class="sec" data-k="ld"><button type="button" class="sh">Land size 土地面积 (sf)<span class="sv"></span><span class="ar">▼</span></button><div class="sb"><div class="mm"><input id="landmin" type="number" inputmode="numeric" placeholder="No Min" aria-label="No Min"><span class="dash">–</span><input id="landmax" type="number" inputmode="numeric" placeholder="No Max" aria-label="No Max"></div></div></div>
+  <div class="sec" data-k="beds"><button type="button" class="sh">Bedrooms 房间<span class="sv"></span><span class="ar">▼</span></button><div class="sb"><div class="chips" id="beds">
+    <button type="button" class="chip" data-v="0">Studio+</button>
+    <button type="button" class="chip" data-v="1">1+</button>
+    <button type="button" class="chip" data-v="2">2+</button>
+    <button type="button" class="chip" data-v="3">3+</button>
+    <button type="button" class="chip" data-v="4">4+</button>
+    <button type="button" class="chip" data-v="5">5+</button>
+  </div></div></div>
+  <div class="sec" data-k="ten"><button type="button" class="sh">Tenure 地契<span class="sv"></span><span class="ar">▼</span></button><div class="sb"><div class="fld"><select id="ten"><option value="">不限 Any</option><option value="FH">Freehold 永久</option><option value="LH">Leasehold 租赁</option></select></div></div></div>
+  <div class="sec" data-k="kw"><button type="button" class="sh">Keywords 关键字<span class="sv"></span><span class="ar">▼</span></button><div class="sb"><div class="fld"><input id="kw" type="search" placeholder="e.g. corner, renovated, 角头" autocomplete="off"></div><div class="hint">每个字都要在盘的原文里出现 All words must appear in the post.</div></div></div>
+  <div class="sec" data-k="furn"><button type="button" class="sh">Furnishing 家私<span class="sv"></span><span class="ar">▼</span></button><div class="sb"><div class="fld"><select id="furn"><option value="">不限 Any</option><option value="F">全家私 Fully</option><option value="P">半家私 Partly</option><option value="B">空屋 Bare</option></select></div></div></div>
+  <div class="sec" data-k="bumi"><button type="button" class="sh">Bumi 土著<span class="sv"></span><span class="ar">▼</span></button><div class="sb"><div class="fld"><select id="bumi"><option value="">不限 Any</option><option value="N">Non-Bumi / Intl</option><option value="B">Bumi lot 土著</option></select></div></div></div>
+  <div class="sec" data-k="gr"><button type="button" class="sh">来源群 Group<span class="sv"></span><span class="ar">▼</span></button><div class="sb"><div class="chips" id="groups"></div></div></div>
+
+  <div class="acts"><button type="button" id="reset">重设 Reset</button><button type="button" class="pri" id="go">看结果 Show results</button></div>
+</div></div>
+<div id="info"><span id="cnt">载入中 Loading…</span>
+  <select id="sort" aria-label="排序 sort">
+    <option value="n">最新 Newest</option>
+    <option value="p">价钱 低→高</option>
+    <option value="pd">价钱 高→低</option>
+    <option value="psf">psf 低→高</option>
+    <option value="bu">屋身 大→小</option>
+    <option value="ld">土地 大→小</option>
+  </select>
+</div>
+<div id="list"></div>
+<button id="more" type="button" hidden>显示更多 Show more</button>
+<footer id="foot"></footer>
+
+<script type="text/plain" id="app">
+(function(){
+var D=window.RES,L=D.L,$=function(i){return document.getElementById(i)},tmr,shown=0,res=[];
+var BASE=Date.UTC(2026,0,1);
+function dstr(d){var x=new Date(BASE+d*864e5);return x.getUTCDate()+"/"+(x.getUTCMonth()+1)+"/"+String(x.getUTCFullYear()).slice(2)}
+var TY=D.types,APT={0:1,1:1,2:1,3:1,4:1,5:1,6:1},HR={0:1,1:1,2:1,3:1,4:1,5:1,6:1,11:1},LD={7:1,8:1,9:1,10:1,12:1};
+var TZH={"condo":"公寓 Condo","serviced apartment":"服务式公寓 Serviced Apt","apartment":"Apartment","flat":"组屋 Flat","penthouse":"Penthouse","duplex/loft":"Duplex/Loft","highrise (unspecified)":"高楼 Highrise","terrace":"排屋 Terrace","cluster":"田字 Cluster","semi-D":"半独立 Semi-D","bungalow":"独立 Bungalow","townhouse":"Townhouse","residential land":"住宅地 Res. land","room":"房间 Room","":"住宅"};
+var AC={};L.forEach(function(r){(r[27]&&r[27].length?r[27]:[r[17]]).forEach(function(i){AC[i]=(AC[i]||0)+1})});
+var areaList=D.areas.map(function(a,i){return {i:i,a:a,n:AC[i]||0}}).filter(function(x){return x.n>=5}).sort(function(a,b){return b.n-a.n});
+areaList.forEach(function(x){var b=document.createElement("button");b.type="button";b.className="chip";b.dataset.v=String(x.i);b.textContent=x.a+" "+x.n;$("areas").appendChild(b)});
+D.groups.forEach(function(g,i){var b=document.createElement("button");b.type="button";b.className="chip";b.dataset.v=String(i);b.textContent=g;$("groups").appendChild(b)});
+function fmtN(n){return Math.round(n).toLocaleString("en-US")}
+function srN(pred){var s=0,r=0;L.forEach(function(x){if(!pred(x))return;if(x[1]==="S"||x[1]==="B")s++;if(x[1]==="R"||x[1]==="B")r++});return "卖 "+fmtN(s)+" · 租 "+fmtN(r)}
+$("n-all").textContent=fmtN(L.length)+" · "+srN(function(){return true});
+$("n-ld").textContent=fmtN(L.filter(function(x){return LD[x[2]]}).length)+" · "+srN(function(x){return LD[x[2]]});
+$("n-hr").textContent=fmtN(L.filter(function(x){return HR[x[2]]}).length)+" · "+srN(function(x){return HR[x[2]]});
+$("cover").textContent="资料 "+D.meta.since.split("-").reverse().join("/")+" – "+(D.meta.last||"").split("-").reverse().join("/")+" · 共 "+fmtN(D.meta.n)+" 个盘 listings · 更新 "+(D.meta.updated||"").slice(0,10);
+$("foot").innerHTML="资料来自 WhatsApp 群组盘源，仅供参考，请向原 agent 核实。Listings from WhatsApp groups, verify with the agent.<br>The Roof Realty / The Pillars Group · CT Chong · 更新 "+D.meta.updated;
+
+function money(s){if(!s)return 0;s=String(s).toLowerCase().replace(/[,rm\s]/g,"");var m=s.match(/^([\d.]+)(k|m|mil|万)?$/);if(!m)return 0;var v=parseFloat(m[1]);return m[2]==="k"?v*1e3:(m[2]==="m"||m[2]==="mil")?v*1e6:m[2]==="万"?v*1e4:v}
+function on(id){return [].filter.call($(id).children,function(c){return c.classList.contains("on")&&c.dataset.v!==undefined&&c.dataset.v!==""}).map(function(c){return c.dataset.v})}
+function tabSR(){var b=$("sr").querySelector("button.on");var v=b&&b.dataset.v;return v==="s"?"S":v==="r"?"R":""}
+function famNow(){var t=$("cat").querySelector(".tile.on");return t?t.dataset.v:""}
+function price(r,sr){return sr==="R"?r[15]:sr==="S"?r[14]:(r[14]||r[15])}
+function isLmc(r){return !!(window.LMC&&window.LMC[r[0]])}
+function typeOk(r){
+  var fam=famNow();
+  if(!fam)return true;
+  var landed=!!LD[r[2]], high=!!HR[r[2]];
+  if(fam==="ld"&&high)return false;
+  if(fam==="hr"&&landed)return false;
+  var box=fam==="ld"?$("chips-ld"):$("chips-hr");
+  var chips=on(box.id);
+  var wantLmc=chips.indexOf("lmc")>=0;
+  var structs=chips.filter(function(v){return v!=="lmc"});
+  if(wantLmc&&!isLmc(r))return false;
+  if(!chips.length||(!structs.length&&wantLmc)){
+    if(fam==="ld")return landed||(wantLmc&&isLmc(r)&&!high);
+    return high||(wantLmc&&isLmc(r)&&!landed);
+  }
+  if(fam==="ld"&&!landed)return false;
+  if(fam==="hr"&&!high)return false;
+  var t=TY[r[2]];
+  for(var i=0;i<structs.length;i++){
+    var v=structs[i];
+    if(v==="terrace"&&t==="terrace")return true;
+    if(v==="cluster"&&t==="cluster")return true;
+    if(v==="semi"&&t==="semi-D")return true;
+    if(v==="bung"&&t==="bungalow")return true;
+    if(v==="apt"&&APT[r[2]])return true;
+    if(v==="townhouse"&&t==="townhouse")return true;
+  }
+  return false;
+}
+var ABBR={tmn:"taman",tman:"taman",jln:"jalan",jaln:"jalan",bdr:"bandar",bndr:"bandar",kg:"kampung",kpg:"kampung",btk:"bukit",jj:"johor jaya",bkt:"bukit"};
+function norm(s){return " "+String(s||"").toLowerCase().replace(/[\u2018\u2019']/g,"").replace(/[^a-z0-9\u4e00-\u9fff]+/g," ").split(" ").filter(Boolean).map(function(w){return ABBR[w]||w}).join(" ")+" "}
+function qphrases(q){return q.split(/[,;，；]+/).map(function(x){return norm(x)}).filter(function(x){return x.trim()})}
+function tagNames(r){return (r[27]&&r[27].length?r[27]:[r[17]]).map(function(i){return D.areas[i]||""}).filter(Boolean)}
+function fieldHay(r){if(r.nf===undefined){var ag=D.agents[r[19]];r.nproj=norm(r[18])+"|"+tagNames(r).map(norm).join("|");r.nf=r.nproj+"|"+norm(ag[0])+"|"+norm(ag[1])+"|"+norm(r[0]);r.nk=norm(r[25])}return r}
+function phraseHit(h,ph){return h.indexOf(ph)>=0}
+var rawNorm={};
+var NB_RX=/(^|[^a-z])(?:nearby|near\s*by|near(?:est)?(?:\s+to)?|close\s+to|closed\s+to|next\s+to|beside|opposite|opp\.?|adjacent(?:\s+to)?|adjoining|surrounded?\s+by|surroundings?|walking\s+distance|walk(?:able)?\s+to|steps?\s+to|(?:easy\s+)?access\s+to|minutes?\s+(?:to|from|away|drive|walk)|mins?\s+(?:to|from|away|drive|walk)|\d+(?:\.\d+)?\s*(?:km|kilometers?|mins?|minutes?)(?![a-z])|just\s+\d+\s*(?:min|km)|drive\s+to|view\s+of|close\s+by)(?![a-z])|附近|靠近|旁边|隔壁|对面|步行|距离|分钟|公里|周边|周围|邻近|临近|紧邻|毗邻/i,NB_HEAD=/^[^A-Za-z0-9\u4e00-\u9fff]*(?:nearby|near\s*by|near|surroundings?|around|facilities|amenities|distance|附近|周边|周围|附近设施|生活配套|配套)(?:\s+(?:amenities|facilities|places|place|attractions|landmarks|area|areas|convenience|location|info|information|of interest|around|the area|设施|地点))*[^A-Za-z0-9\u4e00-\u9fff]*(?:[:：][^\n]{0,40})?$/i,NB_STOP=/\brm\s?\d|\d\s?(?:k|mil)\b|for\s*sale|for\s*rent|\bbed|\bbath|sq\s?ft|\bsqf|freehold|leasehold|furnish|wa\.me|wasap|\+?60\d{8}|tenure|出售|出租|售价|租金/i,NB_AMEN=/\baeon\b|\blotus'?s?\b|\bgiant\b|\bmydin\b|econsave|hospital|\bschools?\b|sekolah|\bcollege\b|\bmall\b|商场|超市|学校|医院|\btesco\b|\bsupermarket\b|\bsmk\b|\bsjk\b|\bmrt\b|\blrt\b|\bkfc\b|\bmcd\b|\bpetronas\b|\bhighway\b|\blebuhraya\b|\bsingapore\b|\bcustoms\b/i;
+function stripNearby(t){var out=[],skip=false,ns=0,idx=0,ls=String(t).split("\n");
+  for(var i=0;i<ls.length;i++){var l=ls[i];
+    if(skip){if(!l.trim()&&ns===0)continue;if(!l.trim()||NB_STOP.test(l)||ns>=14)skip=false;else{ns++;continue}}
+    if(l.trim()&&NB_HEAD.test(l.trim())){skip=true;ns=0;continue}
+    if(l.trim())idx++;
+    var m=NB_RX.exec(l);
+    if(m){l=l.slice(0,m.index+(m[1]?m[1].length:0)).replace(/[\s\-–—:：,;|@(（\[]+$/,"");if(!/[A-Za-z\u4e00-\u9fff]/.test(l))continue}
+    else if(idx>4&&NB_AMEN.test(l)&&!NB_STOP.test(l))continue;
+    out.push(l)}
+  return out.join("\n")}
+function rawHay(r){var i=IDX[r[0]];if(!window.RAW)return null;if(rawNorm[i]===undefined)rawNorm[i]=norm(stripNearby(window.RAW[i]||""));return rawNorm[i]}
+var CURSR="";
+
+function bedMin(){var vs=on("beds").map(Number);return vs.length?Math.max.apply(null,vs):-1}
+function setSec(k,text,on){var sec=document.querySelector('.sec[data-k="'+k+'"]');if(!sec)return;sec.querySelector(".sv").textContent=text||"Any";sec.classList.toggle("act",!!on)}
+function summaries(){
+  var ar=on("areas"),gr=on("groups"),bu=[],ld=[];
+  setSec("ar",ar.length?ar.length+" selected":"Any",ar.length);
+  if($("bumin").value)bu.push("min "+$("bumin").value);if($("bumax").value)bu.push("max "+$("bumax").value);
+  setSec("bu",bu.length?bu.join(" – "):"Any",bu.length);
+  if($("landmin").value)ld.push("min "+$("landmin").value);if($("landmax").value)ld.push("max "+$("landmax").value);
+  setSec("ld",ld.length?ld.join(" – "):"Any",ld.length);
+  var bd=on("beds");
+  setSec("beds",bd.length?bd.map(function(v){return v==="0"?"Studio+":v+"+"}).join(", "):"Any",bd.length);
+  var te=$("ten").value,fu=$("furn").value,bm=$("bumi").value,kw=$("kw").value.trim();
+  setSec("ten",te==="FH"?"Freehold":te==="LH"?"Leasehold":"Any",!!te);
+  setSec("kw",kw||"Any",!!kw);
+  setSec("furn",{F:"Fully",P:"Partly",B:"Bare"}[fu]||"Any",!!fu);
+  setSec("bumi",bm==="N"?"Non-Bumi":bm==="B"?"Bumi":"Any",!!bm);
+  setSec("gr",gr.length?gr.length+" selected":"Any",gr.length);
+}
+function applySearch(list,q){
+  var words=qphrases(q);
+  if(!words.length){list.forEach(function(r){r.rk=0});return list}
+  var st1=list.filter(function(r){fieldHay(r);return words.every(function(ph){return phraseHit(r.nf,ph)||phraseHit(r.nk,ph)})});
+  if(st1.length){st1.forEach(function(r){r.rk=words.every(function(ph){return phraseHit(r.nproj,ph)})?0:1});return st1}
+  if(window.RAW){var st2=list.filter(function(r){var h=rawHay(r);return h&&words.every(function(ph){return phraseHit(h,ph)})});st2.forEach(function(r){r.rk=0});return st2}
+  loadRaw(function(){run()});
+  return [];
+}
+function run(){
+  var q=$("q").value.trim(),kw=$("kw").value.trim(),sr=tabSR();
+  var bumin=money($("bumin").value),bumax=money($("bumax").value),landmin=money($("landmin").value),landmax=money($("landmax").value);
+  var pmin=money($("minP").value),pmax=money($("maxP").value),bd=bedMin(),fu=$("furn").value,te=$("ten").value,bm=$("bumi").value;
+  var ar=on("areas").map(Number),gr=on("groups").map(Number);
+  CURSR=sr;
+  summaries();
+  res=L.filter(function(r){
+    if(sr&&r[1]!==sr&&r[1]!=="B")return false;
+    if(!typeOk(r))return false;
+    if(ar.length&&(r[27]&&r[27].length? !ar.some(function(i){return r[27].indexOf(i)>=0}):ar.indexOf(+r[17])<0))return false;
+    if(bd>=0&&(r[8]<0||r[8]<bd))return false;
+    if(bumin&&r[7]<bumin)return false;
+    if(bumax&&(!r[7]||r[7]>bumax))return false;
+    if(landmin&&r[6]<landmin)return false;
+    if(landmax&&(!r[6]||r[6]>landmax))return false;
+    var p=price(r,sr);
+    if(pmin&&(!p||p<pmin))return false;
+    if(pmax&&(!p||p>pmax))return false;
+    if(fu&&r[11]!==fu)return false;
+    if(te&&r[12]!==te)return false;
+    if(bm&&r[13]!==bm)return false;
+    if(gr.length&&gr.indexOf(+r[21])<0&&!r[22].some(function(a){return gr.indexOf(+a[2])>=0}))return false;
+    return true});
+  res=applySearch(res,q);
+  if(kw&&res.length)res=applySearch(res,kw);
+  var s=$("sort").value;
+  res.sort(function(a,b){
+    if((a.rk||0)!==(b.rk||0))return (a.rk||0)-(b.rk||0);
+    if(s==="n")return b[24]-a[24];
+    if(s==="bu")return (b[7]||0)-(a[7]||0);
+    if(s==="ld")return (b[6]||0)-(a[6]||0);
+    if(s==="psf"){return (a[16]||1e9)-(b[16]||1e9)}
+    var pa=price(a,sr)||(s==="pd"?0:1e12),pb=price(b,sr)||(s==="pd"?0:1e12);return s==="pd"?pb-pa:pa-pb});
+  $("cnt").textContent="找到 "+res.length.toLocaleString()+" 个盘";
+  $("go").textContent="看 "+fmtN(res.length)+" 个结果 Show results";
+  save();render(false);
+}
+function esc(s){return String(s).replace(/[&<>"]/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]})}
+function fmtP(v){return v>=1e6?"RM"+(v/1e6).toFixed(v%1e6?2:0).replace(/\.?0+$/,"")+"mil":"RM"+v.toLocaleString()}
+function wa(ag,r){if(!ag[1])return esc(ag[0]||"?")+" <span class='small'>(无电话 no phone)</span>";
+  var t=encodeURIComponent("Hi "+(ag[0]||"")+", 请问这个单位还有吗? "+(r[18]||D.areas[r[17]]||"")+" "+(r[14]&&CURSR!=="R"?fmtP(r[14]):"")+(r[15]&&CURSR!=="S"?" RM"+r[15]+"/月":""));
+  return "<a href='https://wa.me/"+ag[1]+"?text="+t+"' target='_blank' rel='noopener'>"+esc(ag[0]||ag[1])+" · +"+ag[1]+" 💬</a>"}
+function card(r,idx){
+  var t=TY[r[2]],sp=[TZH[t]||t];
+  if(r[3])sp.push(r[3]+" 层 storey");if(r[4])sp.push(/^L/.test(r[4])?"Level "+r[4].slice(1):r[4]+" floor");if(r[5])sp.push(r[5]);
+  if(r[6])sp.push("土地 Land "+r[6].toLocaleString()+" sf");if(r[7])sp.push("屋身 BU "+r[7].toLocaleString()+" sf");
+  if(r[8]>=0)sp.push((r[8]===0&&!r[9]?"Studio":(r[9]||r[8])+" 房")+(r[10]?" "+r[10]+" 厕":""));
+  var sp2=[];if(r[11])sp2.push({F:"全家私 Fully furnished",P:"半家私 Partly furnished",B:"空屋 Bare"}[r[11]]);if(r[12])sp2.push(r[12]==="FH"?"Freehold 永久":"Leasehold 租赁");
+  if(r[13])sp2.push({N:"Non-Bumi / Intl",B:"Bumi lot 土著",M:"Malay Reserve"}[r[13]]);
+  var pr=[];if(r[14]&&CURSR!=="R")pr.push(fmtP(r[14])+(r[16]?" <small>(RM"+r[16]+" psf)</small>":""));if(r[15]&&CURSR!=="S")pr.push("租 RM"+r[15].toLocaleString()+"/月");
+  var kind={S:"出售 SALE",R:"出租 RENT",B:"售/租 SALE/RENT"}[r[1]],ag=D.agents[r[19]];
+  var h="<div class='card'><h3><span class='tag'>"+kind+"</span>"+esc(r[18]||D.areas[r[17]]||"(未注明项目)")+"</h3>";
+  if(r[17]>=0||(r[27]&&r[27].length))h+="<div class='small'>📍 "+esc(tagNames(r).join(" · "))+"</div>";
+  h+="<div class='spec'>"+esc(sp.join(" · "))+"</div>"+(sp2.length?"<div class='spec'>"+esc(sp2.join(" · "))+"</div>":"");
+  h+="<div class='price'>"+(pr.join(" · ")||"<small>价格未注明 Price n/a</small>")+"</div>";
+  if(r[26])h+="<div class='small'>🏠 已有租客 Tenanted · 租金 RM"+r[26].toLocaleString()+"/月 <small>(出售单位，租金仅供参考)</small></div>";
+  h+="<div class='ag'>👤 最早发布 "+wa(ag,r)+"</div><div class='small'>"+dstr(r[20])+" · "+esc(D.groups[r[21]]||"")+" · 共出现 "+r[23]+" 次 · 最近 "+dstr(r[24])+" · "+r[0]+"</div>";
+  if(r[22].length){h+="<details class='oth'><summary>也有发 Also posted by ("+r[22].length+")</summary>";
+    r[22].forEach(function(a){var g=D.agents[a[0]];h+="<div>"+wa(g,r)+" <span class='small'>"+dstr(a[1])+" · "+esc(D.groups[a[2]]||"")+"</span></div>"});h+="</details>"}
+  h+="<details class='orig'><summary>看原文 Original post</summary><pre id='raw"+idx+"'></pre><button type='button' class='copy-orig' id='cp"+idx+"' data-i='"+idx+"'>📋 复制全文 Copy</button></details></div>";
+  return h;
+}
+function render(more){var el=$("list");if(!more){el.innerHTML="";shown=0}
+  var n=Math.min(res.length,shown+40),h="";for(var i=shown;i<n;i++)h+=card(res[i],i);el.insertAdjacentHTML("beforeend",h);shown=n;
+  if(!res.length)el.innerHTML="<div class='empty'>没有符合的单位，试试放宽条件 · No match, try fewer filters</div>";
+  var b=$("more");b.hidden=shown>=res.length;b.textContent="显示更多 Show more"+(shown<res.length?" ("+(res.length-shown)+")":"");
+}
+var rawLoading=null;
+function loadRaw(cb){if(window.RAW)return cb();if(rawLoading){rawLoading.push(cb);return}rawLoading=[cb];var s=document.createElement("script");s.src="raw.js?v="+encodeURIComponent(D.meta.updated);
+  s.onload=function(){rawLoading.forEach(function(f){f()})};document.head.appendChild(s)}
+var IDX={};L.forEach(function(r,i){IDX[r[0]]=i});
+function fallbackCopy(t){var ta=document.createElement("textarea");ta.value=t;ta.setAttribute("readonly","");ta.style.cssText="position:fixed;top:0;left:0;width:1px;height:1px;opacity:0;font-size:16px";
+  document.body.appendChild(ta);ta.focus();ta.select();try{ta.setSelectionRange(0,t.length)}catch(x){}var ok=false;try{ok=document.execCommand("copy")}catch(x){}document.body.removeChild(ta);return ok}
+function copyText(t,done){var fin=false,f=function(ok){if(!fin){fin=true;done(ok)}};
+  if(navigator.clipboard&&navigator.clipboard.writeText&&window.isSecureContext){try{navigator.clipboard.writeText(t).then(function(){f(true)},function(){f(fallbackCopy(t))});setTimeout(function(){f(fallbackCopy(t))},1200)}catch(x){f(fallbackCopy(t))}}else f(fallbackCopy(t))}
+
+$("list").addEventListener("click",function(e){
+  var c=e.target.closest(".copy-orig");
+  if(c){var j=+c.dataset.i,t=(window.RAW&&window.RAW[IDX[res[j][0]]])||($("raw"+j)&&$("raw"+j).textContent)||"";
+    copyText(t,function(ok){c.textContent=ok?"已复制 ✓ Copied":"复制失败 请长按选取 Copy failed";c.classList.toggle("ok",ok);if(!ok){try{var rg=document.createRange();rg.selectNodeContents($("raw"+j));var sl=getSelection();sl.removeAllRanges();sl.addRange(rg)}catch(x){}}clearTimeout(c._t);c._t=setTimeout(function(){c.textContent="📋 复制全文 Copy";c.classList.remove("ok")},2000)})}
+});
+$("list").addEventListener("toggle",function(e){
+  var d=e.target.closest("details.orig");if(!d||!d.open)return;
+  var pre=d.querySelector("pre");if(!pre||pre.dataset.loaded)return;
+  var i=+((d.querySelector(".copy-orig")||{}).dataset||{}).i;
+  if(isNaN(i))return;
+  pre.textContent="载入中 Loading…";
+  loadRaw(function(){pre.textContent=window.RAW[IDX[res[i][0]]]||"";pre.dataset.loaded="1"});
+},true);
+$("more").addEventListener("click",function(){render(true)});
+
+function showChips(){var fam=famNow();$("chips-ld").hidden=fam!=="ld";$("chips-hr").hidden=fam!=="hr"}
+function save(){
+  var p=[];if($("q").value)p.push("q="+encodeURIComponent($("q").value));
+  if($("kw").value)p.push("kw="+encodeURIComponent($("kw").value));
+  var sr=tabSR();if(sr)p.push("sr="+(sr==="S"?"s":"r"));
+  var fam=famNow();if(fam)p.push("fam="+fam);
+  var chips=on(fam==="hr"?"chips-hr":"chips-ld");if(fam&&chips.length)p.push("ty="+chips.join(","));
+  ["minP","maxP","bumin","bumax","landmin","landmax","ten","furn","bumi"].forEach(function(k){if($(k).value)p.push(k+"="+encodeURIComponent($(k).value))});
+  var bd=on("beds");if(bd.length)p.push("beds="+bd.join(","));
+  var ar=on("areas");if(ar.length)p.push("ar="+ar.join(","));
+  var gr=on("groups");if(gr.length)p.push("gr="+gr.join(","));
+  if($("sort").value&&$("sort").value!=="n")p.push("sort="+$("sort").value);
+  history.replaceState(null,"",p.length?"#"+p.join("&"):location.pathname+location.search);
+}
+function load(){
+  var h=location.hash.slice(1);if(!h)return;
+  h.split("&").forEach(function(kv){
+    var i=kv.indexOf("="),k=kv.slice(0,i),v=decodeURIComponent(kv.slice(i+1));
+    if(k==="q")$("q").value=v;
+    else if(k==="kw")$("kw").value=v;
+    else if(k==="sr"){[].forEach.call($("sr").children,function(c){c.classList.toggle("on",c.dataset.v===v)})}
+    else if(k==="fam"){[].forEach.call($("cat").children,function(c){c.classList.toggle("on",c.dataset.v===v)});showChips()}
+    else if(k==="ty"){var vs=v.split(","),box=famNow()==="hr"?$("chips-hr"):$("chips-ld");[].forEach.call(box.children,function(c){if(vs.indexOf(c.dataset.v)>=0)c.classList.add("on")})}
+    else if(k==="beds"||k==="ar"||k==="gr"){var id={beds:"beds",ar:"areas",gr:"groups"}[k],vs=v.split(",");[].forEach.call($(id).children,function(c){if(vs.indexOf(c.dataset.v)>=0)c.classList.add("on")})}
+    else if($(k))$(k).value=v;
+  });
+}
+
+$("sr").addEventListener("click",function(e){var b=e.target.closest("button");if(!b)return;[].forEach.call($("sr").children,function(c){c.classList.toggle("on",c===b)});run()});
+$("cat").addEventListener("click",function(e){
+  var b=e.target.closest("button");if(!b)return;
+  [].forEach.call($("cat").children,function(c){c.classList.toggle("on",c===b)});
+  showChips();run();
+});
+["chips-ld","chips-hr","beds","areas","groups"].forEach(function(id){
+  $(id).addEventListener("click",function(e){var c=e.target.closest(".chip");if(!c)return;c.classList.toggle("on");run()});
+});
+document.querySelectorAll(".sec .sh").forEach(function(btn){btn.addEventListener("click",function(){btn.parentElement.classList.toggle("open")})});
+$("q").addEventListener("input",function(){clearTimeout(tmr);tmr=setTimeout(run,200)});
+$("q").addEventListener("keydown",function(e){if(e.key==="Enter"){$("q").blur();run()}});
+$("kw").addEventListener("input",function(){clearTimeout(tmr);tmr=setTimeout(run,200)});
+["minP","maxP","bumin","bumax","landmin","landmax"].forEach(function(k){$(k).addEventListener("input",function(){clearTimeout(tmr);tmr=setTimeout(run,350)})});
+["ten","furn","bumi","sort"].forEach(function(k){$(k).addEventListener("change",run)});
+$("go").addEventListener("click",function(){run();var el=$("info");if(el)el.scrollIntoView({behavior:"smooth",block:"start"})});
+$("reset").addEventListener("click",function(){
+  $("q").value="";$("kw").value="";
+  ["minP","maxP","bumin","bumax","landmin","landmax"].forEach(function(k){$(k).value=""});
+  $("ten").selectedIndex=0;$("furn").selectedIndex=0;$("bumi").selectedIndex=0;$("sort").selectedIndex=0;
+  document.querySelectorAll(".chip.on").forEach(function(c){c.classList.remove("on")});
+  [].forEach.call($("sr").children,function(c,i){c.classList.toggle("on",i===0)});
+  [].forEach.call($("cat").children,function(c,i){c.classList.toggle("on",i===0)});
+  showChips();run();
+});
+load();showChips();run();
+})();
+</script>
+<script src="../embed.js" data-cat="residential"></script>
+</body>
+</html>

@@ -1,0 +1,224 @@
+<!doctype html>
+<html lang="zh">
+<head>
+<meta charset="utf-8">
+<meta name="robots" content="noindex,nofollow">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>TPG 柔佛工厂配对 Industrial Finder</title>
+<meta name="description" content="柔佛工厂 / 仓库 / 工业地 / 店屋 盘源搜索 (Johor factory &amp; industrial listings)">
+<meta name="theme-color" content="#0f3d6e">
+<link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="工厂配对">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header>
+  <h1>TPG 柔佛工厂配对 Industrial Finder</h1>
+  <div class="sub" id="cover">载入中… Loading…</div>
+</header>
+<div class="fp" id="panel"><div>
+  <div class="search"><span class="ico">🔍</span><input id="q" type="search" placeholder="Search location 地区 / 项目 e.g. Senai, Kempas" enterkeyhint="search" autocomplete="off"></div>
+  <div class="tabs" id="sr"><button type="button" data-v="" class="on">全部 All</button><button type="button" data-v="s">Buy 买</button><button type="button" data-v="r">Rent 租</button></div>
+  <h2>Property type 类型</h2>
+  <div class="tiles" id="cat"><button type="button" class="all on" data-v="">全部类型 All types <small id="cA"></small></button><button type="button" class="tile" data-v="I"><span class="ic">🏭</span>Industry 工业<small id="cI"></small></button><button type="button" class="tile" data-v="C"><span class="ic">🏬</span>Commercial 商业<small id="cC"></small></button><button type="button" class="tile" data-v="L"><span class="ic">🟫</span>Land 地皮<small id="cL"></small></button><button type="button" class="tile" data-v="B"><span class="ic">🤝</span>Business Take Over 生意出顶<small id="cB"></small></button></div>
+  <div class="chips" id="types" hidden></div>
+  <h2>Price 价钱 (RM) <small>租 = 月租 monthly rent</small></h2>
+  <div class="mm"><input id="minP" type="number" inputmode="numeric" placeholder="No Min" aria-label="No Min"><span class="dash">–</span><input id="maxP" type="number" inputmode="numeric" placeholder="No Max" aria-label="No Max"></div>
+  <h2>More filters 更多条件</h2>
+    <div class="sec" data-k="ar"><button type="button" class="sh">地区 Area<span class="sv"></span><span class="ar">▼</span></button><div class="sb"><div class="chips" id="areas"></div></div></div>
+    <div class="sec" data-k="bu"><button type="button" class="sh">Built-up 建筑面积 (sf)<span class="sv"></span><span class="ar">▼</span></button><div class="sb"><div class="mm"><input id="minBu" type="number" inputmode="numeric" placeholder="No Min" aria-label="No Min"><span class="dash">–</span><input id="maxBu" type="number" inputmode="numeric" placeholder="No Max" aria-label="No Max"></div></div></div>
+    <div class="sec" data-k="ld"><button type="button" class="sh">Land size 土地面积 (sf)<span class="sv"></span><span class="ar">▼</span></button><div class="sb"><div class="mm"><input id="minLd" type="number" inputmode="numeric" placeholder="No Min" aria-label="No Min"><span class="dash">–</span><input id="maxLd" type="number" inputmode="numeric" placeholder="No Max" aria-label="No Max"></div></div></div>
+    <div class="sec" data-k="amp"><button type="button" class="sh">Power 电 (amp)<span class="sv"></span><span class="ar">▼</span></button><div class="sb"><div class="mm"><input id="minAmp" type="number" inputmode="numeric" placeholder="No Min" aria-label="No Min"><span class="dash">–</span><input id="maxAmp" type="number" inputmode="numeric" placeholder="No Max" aria-label="No Max"></div></div></div>
+    <div class="sec" data-k="ten"><button type="button" class="sh">Tenure 地契<span class="sv"></span><span class="ar">▼</span></button><div class="sb"><div class="fld"><select id="ten" aria-label="Tenure"><option value="">不限 Any</option><option value="F">Freehold 永久</option><option value="L">Leasehold 租赁</option></select></div></div></div>
+    <div class="sec" data-k="kw"><button type="button" class="sh">Keywords 关键字<span class="sv"></span><span class="ar">▼</span></button><div class="sb"><div class="fld"><input id="kw" type="search" placeholder="e.g. gas, sprinkler, crane, 角头" autocomplete="off"></div><div class="hint">每个字都要在盘的原文里出现 All words must appear in the post.</div></div></div>
+    <div class="sec" data-k="mo"><button type="button" class="sh">Ceiling / Loading / Industry 楼高 · 载重 · 类别<span class="sv"></span><span class="ar">▼</span></button><div class="sb"><div class="mm" style="grid-template-columns:1fr 1fr"><label class="fld"><span>楼高 最少 Min ceiling</span><input id="minCeil" type="number" inputmode="decimal"></label><label class="fld"><span>单位 Unit</span><select id="ceilU"><option value="ft">ft 尺</option><option value="m">m 米</option></select></label><label class="fld"><span>载重 最少 Min loading (kN/m²)</span><input id="minFl" type="number" inputmode="numeric"></label><label class="fld"><span>工业类别 Industry</span><select id="ind"><option value="">不限 Any</option><option value="L">Light</option><option value="M">Medium</option><option value="H">Heavy</option></select></label></div></div></div>
+    <div class="sec" data-k="gr"><button type="button" class="sh">来源群 Group<span class="sv"></span><span class="ar">▼</span></button><div class="sb"><div class="chips" id="groups"></div></div></div>
+  <div class="acts"><button type="button" id="reset">重设 Reset</button><button type="button" class="pri" id="go">看结果 Show results</button></div>
+</div></div>
+<div id="info"><span id="cnt"></span>
+  <select id="sort" aria-label="排序 sort">
+    <option value="new">最新 Newest</option><option value="pa">价钱 低→高</option><option value="pd">价钱 高→低</option>
+    <option value="amp">电 Amp 高→低</option><option value="bu">建筑 BU 大→小</option>
+  </select></div>
+<div id="list"></div>
+<button id="more" type="button" hidden>显示更多 Show more</button>
+<footer>资料来自 WhatsApp 群组盘源，仅供参考，请向原 agent 核实。Listings from WhatsApp groups, verify with the agent.<br>The Pillars Group · CT Chong</footer>
+<script type="text/plain" id="app">
+(function(){
+"use strict";
+var D=window.FDATA;
+if(!D){document.getElementById("cover").textContent="资料载入失败，请重新整理 / Data failed to load, please refresh";return;}
+var $=function(id){return document.getElementById(id)};
+var TYPES=[["D","独立式 Detached"],["S","半独立 Semi-D"],["C","Cluster"],["T","排屋 Terrace"],["W","仓库 Warehouse"],["F","工厂 Factory"],["L","地皮 Land"],["P","店屋 Shoplot"],["K","商业楼 Commercial bldg"],["E","办公室 Office"],["H","宿舍 Hostel"],["B","生意出顶 Takeover"],["O","Open shed"],["X","Data centre"]];
+var TN={D:"Detached factory",S:"Semi-D factory",C:"Cluster factory",T:"Terrace factory",W:"Warehouse",F:"Factory",L:"Land",P:"Shoplot",B:"生意出顶 Business takeover",E:"Office 办公室",K:"Commercial building 商业楼",H:"Hostel 宿舍",O:"Open shed",X:"Data centre"};
+var IND={L:"Light industry",M:"Medium industry",H:"Heavy industry"},TEN={F:"Freehold",L:"Leasehold"};
+var G=D.meta.groups, GN=D.meta.groupNames;
+var SENAI_X=/i-?synergy|seelong|idaman|m-?park|airport city|ebp ?2|eco business park 2/i;
+var MON=["","1月","2月","3月","4月","5月","6月","7月","8月","9月","10月","11月","12月"];
+function dstr(s){return parseInt(s.slice(4,6),10)+"/"+parseInt(s.slice(2,4),10)+"/20"+s.slice(0,2)}
+function fmtN(n){return Math.round(n).toLocaleString("en-US")}
+function money(v){return v>=1e6?"RM"+(v/1e6).toFixed(v>=1e7?1:2).replace(/\.?0+$/,"")+"mil":"RM"+fmtN(v)}
+function esc(s){return String(s).replace(/[&<>"']/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]})}
+function gtags(mask){var o=[];for(var i=0;i<G.length;i++)if(mask&(1<<i))o.push(G[i]);return o}
+// precompute
+var districts={}, L=D.L;
+L.forEach(function(x){var ar=D.areas[x.a]||["?",""];x.area=ar[0];x.dist=ar[1]||ar[0];x.par=ar[2]||"";
+  x.senai=x.dist==="Senai"||SENAI_X.test(x.loc+" "+x.area);
+  x.gm=x.ag.reduce(function(m,a){return m|a[2]},0);
+  // keyword search: area / district / project / title / specs only, never the full original text (CT 11/23: a 'Nusa Cemerlang'
+  // in a connectivity paragraph must not make a SiLC unit show up for 'cemerlang')
+  x.s=(x.area+" "+x.dist+" "+x.par+" "+x.loc+" "+(x.kw||"")+" "+(TN[x.t]||"")+" "+x.kf+" "+({L:"light industrial",M:"medium industrial",H:"heavy industrial"}[x.ind]||"")+" "+({F:"freehold",L:"leasehold"}[x.ten]||"")+" "+x.ag.map(function(a){var g=D.agents[a[0]];return g[0]+" "+g[1]+" 0"+g[1].slice(2)}).join(" ")).toLowerCase().replace(/\s+/g," ");
+  if(x.dist&&x.dist!=="?")districts[x.dist]=(districts[x.dist]||0)+1;});
+var dlist=Object.keys(districts).sort(function(a,b){return districts[b]-districts[a]});
+$("cover").textContent="资料 "+dstr(D.meta.from.replace(/-/g,"").slice(2))+" – "+dstr(D.meta.to.replace(/-/g,"").slice(2))+" · 共 "+fmtN(D.meta.count)+" 个盘 listings · 更新 "+D.meta.built.slice(0,10);
+function chips(el,items,key){$(el).innerHTML=items.map(function(it){return '<button type="button" class="chip" data-v="'+esc(it[0])+'">'+esc(it[1])+'</button>'}).join("");
+  $(el).addEventListener("click",function(e){var b=e.target.closest(".chip");if(!b)return;b.classList.toggle("on");run()})}
+chips("areas",dlist.map(function(d){return [d,(d==="Senai"?"Senai+ 含Seelong/EBP2/M-Park/Idaman/I-Synergy":d)+" "+districts[d]]}));
+// CT 23/11: one site, three categories. Every type code belongs to exactly one category.
+var CAT={D:"I",S:"I",C:"I",T:"I",W:"I",F:"I",O:"I",X:"I",P:"C",B:"B",E:"C",H:"C",K:"C",L:"L"};
+var CN={I:0,C:0,L:0,B:0};L.forEach(function(x){x.cat=CAT[x.t]||"I";CN[x.cat]++});
+function srN(arr){var s=0,r=0;arr.forEach(function(x){if(x.sr==="s"||x.sr==="b"||(!x.sr&&x.sale))s++;if(x.sr==="r"||x.sr==="b"||(!x.sr&&x.rent))r++});return "卖 "+s+" · 租 "+r}
+$("cA").textContent=fmtN(L.length)+" · "+srN(L);$("cB").textContent=fmtN(CN.B)+" · 顶让 takeover";
+["I","C","L"].forEach(function(k){$("c"+k).textContent=fmtN(CN[k])+" · "+srN(L.filter(function(x){return x.cat===k}))});
+// the type chips show only the subtypes of the chosen category, each with its count
+function typeChips(cat){return;var tc={};L.forEach(function(x){if(!cat||x.cat===cat)tc[x.t]=(tc[x.t]||0)+1});
+  $("types").innerHTML=TYPES.filter(function(t){return tc[t[0]]}).map(function(t){return '<button type="button" class="chip" data-v="'+esc(t[0])+'">'+esc(t[1])+" "+tc[t[0]]+'</button>'}).join("")}
+$("types").addEventListener("click",function(e){var b=e.target.closest(".chip");if(!b)return;b.classList.toggle("on");run()});
+typeChips("");
+$("cat").addEventListener("click",function(e){var b=e.target.closest("button");if(!b)return;[].forEach.call($("cat").children,function(c){c.classList.toggle("on",c===b)});typeChips(b.dataset.v);run()});
+chips("groups",G.map(function(g){return [g,g+" · "+GN[g]]}));
+$("sr").addEventListener("click",function(e){var b=e.target.closest("button");if(!b)return;[].forEach.call($("sr").children,function(c){c.classList.toggle("on",c===b)});run()});
+function on(el){return [].map.call($(el).querySelectorAll(".chip.on"),function(b){return b.dataset.v})}
+function num(id){var v=parseFloat($(id).value);return isNaN(v)?null:v}
+var NUMS=["minAmp","maxAmp","minBu","maxBu","minLd","maxLd","minCeil","minFl","minP","maxP"],SELS=["ceilU","ind","ten","sort"];
+function state(){var s={cat:$("cat").querySelector(".on").dataset.v,q:$("q").value.trim(),sr:$("sr").querySelector(".on").dataset.v,ar:on("areas"),ty:on("types"),gr:on("groups"),kw:$("kw").value.trim()};
+  NUMS.forEach(function(k){s[k]=num(k)});SELS.forEach(function(k){s[k]=$(k).value});return s}
+function price(x,sr){if(sr==="r")return x.rent||0;if(sr==="s")return x.sale||0;return x.rent||x.sale||0}
+function match(x,s){
+  if(x.cat!=="B"&&s.sr==="r"&&!(x.sr==="r"||x.sr==="b"||(!x.sr&&x.rent)))return false;
+  if(x.cat!=="B"&&s.sr==="s"&&!(x.sr==="s"||x.sr==="b"||(!x.sr&&x.sale)))return false;
+  if(s.ar.length&&!s.ar.some(function(a){return a==="Senai"?x.senai:x.dist===a}))return false;
+  if(s.cat&&x.cat!==s.cat)return false;
+  if(s.ty.length&&s.ty.indexOf(x.t)<0)return false;
+  if(s.gr.length&&!s.gr.some(function(g){return x.gm&(1<<G.indexOf(g))}))return false;
+  if(s.minAmp!=null&&!(x.amp>=s.minAmp))return false;
+  if(s.maxAmp!=null&&!(x.amp&&x.amp<=s.maxAmp))return false;
+  if(s.minBu!=null&&!(x.bu>=s.minBu))return false;
+  if(s.maxBu!=null&&!(x.bu&&x.bu<=s.maxBu))return false;
+  if(s.minLd!=null&&!(x.ld>=s.minLd))return false;
+  if(s.maxLd!=null&&!(x.ld&&x.ld<=s.maxLd))return false;
+  if(s.minCeil!=null){var c=s.ceilU==="m"?x.cm:(x.cf||x.cm*3.281);if(!(c>=s.minCeil-0.05))return false}
+  if(s.minFl!=null&&!(x.fl>=s.minFl))return false;
+  if(s.maxP!=null){var p=price(x,s.sr);if(!(p&&p<=s.maxP))return false}
+  if(s.minP!=null){var p2=price(x,s.sr);if(!(p2&&p2>=s.minP))return false}
+  if(s.kw){if(x.kt==null)x.kt=(x.s+" "+x.txt).toLowerCase();var kws=s.kw.toLowerCase().split(/[\s,，]+/);for(var j=0;j<kws.length;j++){if(kws[j]&&x.kt.indexOf(kws[j])<0)return false}}
+  if(s.ind&&x.ind!==s.ind)return false;
+  if(s.ten&&x.ten!==s.ten)return false;
+  if(s.q&&s.ph){if(x.s.indexOf(s.ph)<0)return false}
+  else if(s.q){var ws=s.q.toLowerCase().split(/\s+/);for(var i=0;i<ws.length;i++){var w=ws[i];if(/^0\d{8,}$/.test(w))w="6"+w;if(x.s.indexOf(w)<0)return false}}
+  return true}
+var res=[],shown=0,PAGE=30;
+function srt(s){var k=s.sort;res.sort(function(a,b){
+  if(k==="pa"||k==="pd"){var pa=price(a,s.sr),pb=price(b,s.sr);if(!pa)return 1;if(!pb)return -1;return k==="pa"?pa-pb:pb-pa}
+  if(k==="amp")return (b.amp||0)-(a.amp||0)||(b.last>a.last?1:-1);
+  if(k==="bu")return (b.bu||0)-(a.bu||0)||(b.last>a.last?1:-1);
+  return b.last>a.last?1:b.last<a.last?-1:0})}
+function agLink(a,x,label){var g=D.agents[a[0]],nm=g[0]||("0"+g[1].slice(2))||"?",ph=g[1];
+  if(!ph)return '<b>'+esc(nm)+'</b>';
+  var msg="Hi "+(g[0]||"")+", 请问这个盘还有吗？"+label;
+  return '<a href="https://wa.me/'+ph+'?text='+encodeURIComponent(msg)+'" target="_blank" rel="noopener">'+esc(nm)+' 0'+ph.slice(2).replace(/^(1\d)(\d{3,4})(\d{4})$/,"$1-$2 $3")+'</a>'}
+function card(x,i,s){
+  var srT=x.sr==="r"?"出租 Rent":x.sr==="s"?"出售 Sale":x.sr==="b"?"租/卖 Rent & Sale":"";
+  var lc=x.loc&&[x.area,x.dist].map(function(z){return (z||"").toLowerCase()}).indexOf(x.loc.toLowerCase())<0?x.loc:"";
+  var place=x.area+(x.dist&&x.area.toLowerCase().indexOf(x.dist.toLowerCase())<0?" ("+x.dist+")":"")+(lc?" · "+lc:"");
+  var title=(i+1)+". "+place+" · "+(TN[x.t]||"Factory")+(srT?" · "+srT:"");
+  var sp=[];
+  sp.push("BU "+(x.bu?fmtN(x.bu)+"sf":"-"));
+  sp.push("地 "+(x.ld?fmtN(x.ld)+"sf"+(x.ld>=21780?" ("+(x.ld/43560).toFixed(2).replace(/\.?0+$/,"")+"ac)":""):"-"));
+  sp.push(x.amp?x.amp+"A":"电 -");
+  sp.push("楼高 "+(x.cm?(+x.cm.toFixed(1))+"m"+(x.cf?"/"+Math.round(x.cf)+"ft":""):"-"));
+  if(x.fl)sp.push("载重 "+x.fl+"kN/m²");
+  if(x.ind)sp.push(IND[x.ind]);
+  if(x.ten)sp.push(TEN[x.ten]);
+  var pr=[];
+  if(x.rent&&x.rf)pr.push("租 "+money(x.rent)+"/月 (楼层价 per floor)");
+  else if(x.rent)pr.push("租 "+money(x.rent)+"/月"+(x.psf&&x.sr!=="s"&&x.psf<=20?" (RM"+x.psf+"psf)":(x.bu&&x.t!=="L"?" (≈RM"+(x.rent/x.bu).toFixed(2)+"psf)":"")));
+  if(x.sale)pr.push("卖 "+money(x.sale)+(x.psf&&x.psf>20?" (RM"+fmtN(x.psf)+"psf)":(x.bu&&x.t!=="L"?" (≈RM"+fmtN(x.sale/x.bu)+"psf BU)":x.ld?" (≈RM"+(x.sale/x.ld).toFixed(1)+"psf 地)":"")));
+  // CT 23/11: several agents, different prices - show the earliest and the latest, each with its agent and date
+  var pp=[];if(x.pp){[["r","租"],["s","卖"]].forEach(function(k){var v=x.pp[k[0]];if(!v)return;
+    function one(e,lab){var a=D.agents[e[1]]||["",""];return lab+" "+money(e[0])+(k[0]==="r"?"/月":"")+"（"+(a[0]||("0"+(a[1]||"").slice(2)))+" "+e[2].slice(4,6)+"/"+e[2].slice(2,4)+" 发）"}
+    pp.push(k[1]+"价不同："+one(v[0],"最早")+" · "+one(v[1],"最新"))})}
+  if(x.tf)pr.push("顶手费 "+money(x.tf)+(x.tsr?" · 店租 RM"+fmtN(x.tsr)+"/月":""));
+  if(x.tr&&x.sale)pr.push(x.tn==="t"?"已有租客 · 租金 RM"+fmtN(x.tr)+"/月":"原文另写租金 RM"+fmtN(x.tr)+"/月");
+  var label=x.area+" "+(TN[x.t]||"")+(x.bu?" BU "+fmtN(x.bu)+"sf":"")+(x.amp?" "+x.amp+"A":"")+(x.rent?" 租"+money(x.rent):x.sale?" 卖"+money(x.sale):"");
+  var f=x.ag[0], oth=x.ag.slice(1);
+  var h='<div class="card"><h3>'+esc(title)+(x.kf?'<span class="kf">'+esc(x.kf)+'</span>':'')+'</h3>'+
+    '<div class="spec">'+esc(sp.join(" | "))+'</div>'+
+    '<div class="spec price">'+esc(pr.join(" | ")||"价钱 请问 agent")+'</div>'+(pp.length?'<div class="small pp">💬 '+esc(pp.join("；"))+'</div>':'')+
+    '<div class="ag">👉 '+agLink(f,x,label)+' <span class="small">首发 '+dstr(f[1])+'</span></div>'+
+    '<div class="small">📍 '+gtags(x.gm).map(function(g){return '<span class="tag" title="'+esc(GN[g])+'">'+esc(g)+'</span>'}).join("")+' 最近 '+dstr(x.last)+'</div>';
+  if(oth.length){h+='<div class="oth">也有人发：'+oth.slice(0,6).map(function(a){return agLink(a,x,label)+' <span class="small">('+gtags(a[2]).join("/")+')</span>'}).join("，")+
+    (oth.length>6?'<details><summary>还有 '+(oth.length-6)+' 位 agent</summary>'+oth.slice(6).map(function(a){return agLink(a,x,label)+' <span class="small">('+gtags(a[2]).join("/")+')</span>'}).join("，")+'</details>':'')+'</div>'}
+  h+='<details><summary>看原文 Original post ▾</summary><button type="button" class="copy-orig">📋 复制全文 Copy</button><pre>'+esc(x.txt)+'</pre></details></div>';
+  return h}
+function render(more){var s=state(),h="";var end=Math.min(res.length,shown+PAGE);
+  for(var i=shown;i<end;i++)h+=card(res[i],i,s);
+  if(more)$("list").insertAdjacentHTML("beforeend",h);else $("list").innerHTML=h||'<div class="empty">没有符合的盘 No match.<br>试试放宽条件（很多盘没写电/楼高/载重，有这些条件会被筛掉）。</div>';
+  shown=end;$("more").hidden=shown>=res.length}
+var tmr;
+// draft 24/11 (PropertyGuru-style): every filter section is collapsed by default; its header shows the active value
+function rng(a,b,u){a=num(a);b=num(b);if(a==null&&b==null)return "";return (a!=null?fmtN(a):"No Min")+" – "+(b!=null?fmtN(b):"No Max")+(u||"")}
+function listLab(a){return a.length<=3?a.join("、"):a.slice(0,3).join("、")+" 等 "+a.length+" 个"}
+function secLab(){var v={ar:listLab(on("areas")),bu:rng("minBu","maxBu"," sf"),ld:rng("minLd","maxLd"," sf"),amp:rng("minAmp","maxAmp"," A"),
+    ten:$("ten").value?$("ten").options[$("ten").selectedIndex].text:"",kw:$("kw").value.trim(),
+    mo:[num("minCeil")!=null?"≥"+num("minCeil")+$("ceilU").value:"",num("minFl")!=null?"≥"+num("minFl")+"kN":"",$("ind").value?$("ind").options[$("ind").selectedIndex].text:""].filter(Boolean).join(" · "),
+    gr:listLab(on("groups"))};
+  [].forEach.call(document.querySelectorAll(".sec"),function(el){var t=v[el.dataset.k]||"";el.querySelector(".sv").textContent=t||"Any";el.classList.toggle("act",!!t);
+    el.querySelector(".sh").setAttribute("aria-expanded",el.classList.contains("open"))})}
+document.querySelectorAll(".sec .sh").forEach(function(h){h.addEventListener("click",function(){h.parentNode.classList.toggle("open");secLab()})});
+function run(){var s=state();secLab();
+  // several words: if some listing has them as one phrase ('desa cemerlang', 'setia business park 1'), match the phrase only
+  var ph=s.q.toLowerCase().replace(/\s+/g," ");s.ph=(ph.indexOf(" ")>0&&L.some(function(x){return x.s.indexOf(ph)>=0}))?ph:"";
+  res=L.filter(function(x){return match(x,s)});srt(s);shown=0;
+  $("cnt").textContent="找到 "+fmtN(res.length)+" 个盘";$("go").textContent="看 "+fmtN(res.length)+" 个结果 Show results";render(false);save(s)}
+function save(s){var p=[];if(s.q)p.push("q="+encodeURIComponent(s.q));if(s.kw)p.push("kw="+encodeURIComponent(s.kw));if(s.sr)p.push("sr="+s.sr);
+  ["ar","ty","gr"].forEach(function(k){if(s[k].length)p.push(k+"="+encodeURIComponent(s[k].join(",")))});
+  NUMS.forEach(function(k){if(s[k]!=null)p.push(k+"="+s[k])});SELS.forEach(function(k){var d=$(k).options[0].value;if(s[k]!==d)p.push(k+"="+s[k])});
+  history.replaceState(null,"",p.length?"#"+p.join("&"):location.pathname+location.search)}
+function load(){var h=location.hash.slice(1);if(!h)return;h.split("&").forEach(function(kv){var i=kv.indexOf("="),k=kv.slice(0,i),v=decodeURIComponent(kv.slice(i+1));
+  if(k==="q")$("q").value=v;else if(k==="kw")$("kw").value=v;else if(k==="sr")[].forEach.call($("sr").children,function(c){c.classList.toggle("on",c.dataset.v===v)});
+  else if(k==="ar"||k==="ty"||k==="gr"){var el={ar:"areas",ty:"types",gr:"groups"}[k],vs=v.split(",");[].forEach.call($(el).children,function(c){if(vs.indexOf(c.dataset.v)>=0)c.classList.add("on")})}
+  else if($(k))$(k).value=v});}
+$("q").addEventListener("input",function(){clearTimeout(tmr);tmr=setTimeout(run,200)});
+$("q").addEventListener("keydown",function(e){if(e.key==="Enter"){$("q").blur();run()}});
+NUMS.concat(["ceilU","ind","ten"]).forEach(function(k){$(k).addEventListener("input",function(){clearTimeout(tmr);tmr=setTimeout(run,300)})});
+$("sort").addEventListener("change",run);
+$("kw").addEventListener("input",function(){clearTimeout(tmr);tmr=setTimeout(run,300)});
+$("ten").addEventListener("change",run);$("ind").addEventListener("change",run);$("ceilU").addEventListener("change",run);
+$("go").addEventListener("click",function(){run();$("info").scrollIntoView({behavior:"smooth"})});
+$("reset").addEventListener("click",function(){$("q").value="";$("kw").value="";NUMS.forEach(function(k){$(k).value=""});SELS.forEach(function(k){$(k).selectedIndex=0});
+  document.querySelectorAll(".chip.on").forEach(function(c){c.classList.remove("on")});[].forEach.call($("sr").children,function(c,i){c.classList.toggle("on",i===0)});run()});
+function copyText(t){
+  function fallback(){var ta=document.createElement("textarea");ta.value=t;ta.setAttribute("readonly","");
+    ta.style.cssText="position:fixed;top:0;left:0;width:2em;height:2em;padding:0;border:0;outline:none;box-shadow:none;background:transparent;opacity:0;";
+    document.body.appendChild(ta);ta.focus();ta.select();ta.setSelectionRange(0,t.length);
+    var ok=false;try{ok=document.execCommand("copy")}catch(e){}document.body.removeChild(ta);return ok}
+  if(navigator.clipboard&&navigator.clipboard.writeText)
+    return navigator.clipboard.writeText(t).catch(function(){if(!fallback())return Promise.reject(new Error("copy"))});
+  return fallback()?Promise.resolve():Promise.reject(new Error("copy"))}
+$("list").addEventListener("click",function(e){
+  var b=e.target.closest(".copy-orig");if(!b)return;e.preventDefault();e.stopPropagation();
+  var pre=b.parentNode.querySelector("pre"),t=pre?pre.textContent:"";
+  copyText(t).then(function(){b.textContent="已复制 ✓";b.classList.add("ok");clearTimeout(b._ct);
+    b._ct=setTimeout(function(){b.textContent="📋 复制全文 Copy";b.classList.remove("ok")},2000)});
+});
+$("more").addEventListener("click",function(){render(true)});
+load();run();
+})();
+</script>
+<script src="../embed.js" data-cat="industry"></script>
+</body>
+</html>
