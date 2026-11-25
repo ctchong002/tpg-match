@@ -15,7 +15,7 @@ input,select,textarea{display:block;width:100%;margin-top:4px;padding:10px;borde
 .topbar{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;background:#000;color:#fff;padding:6px 8px;gap:6px}
 .tabs-top{display:flex;gap:4px;overflow-x:auto}
 .tabs-top button{background:rgba(255,255,255,.12);color:#fff;border:0;border-radius:8px;padding:8px 12px;font:inherit;white-space:nowrap;cursor:pointer}
-.tabs-top button.on{background:#fff;color:#111;font-weight:600}
+.tabs-top button.on{background:#E2B57E;color:#111;font-weight:600}
 .who{display:flex;align-items:center;gap:6px;font-size:13px;opacity:.9;min-width:0}.who .link{color:#fff;flex:0 0 auto}
 .who span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:40vw}
 .pane{flex:1;width:100%;border:0;min-height:0}.scroll{overflow:auto}
@@ -28,26 +28,24 @@ input,select,textarea{display:block;width:100%;margin-top:4px;padding:10px;borde
 @media(max-width:560px){.grid{grid-template-columns:1fr}.tabs-top button{padding:7px 9px;font-size:14px}}
 
 .boot-inner{display:flex;flex-direction:column;align-items:center;gap:14px;color:#667}
-.boot-inner .logo-panel{width:min(280px,80vw);border-radius:12px;padding:28px 24px 24px}
-.boot-logo{width:min(200px,72%);height:auto;margin:0 auto;display:block}
+.boot-inner .logo-panel{width:min(300px,82vw);border-radius:12px;padding:0;overflow:hidden}
+.boot-logo{width:100%;height:auto;display:block}
 .boot-msg{font-size:14px}
-.logo-panel{background:#000}
-.login-logo{display:block;width:min(220px,72%);height:auto;margin:0 auto}
+.logo-panel{background:#1B1B1B}
+.login-logo{display:block;width:100%;height:auto;margin:0}
 .center-card{text-align:center;padding:0;overflow:hidden;max-width:420px;margin:12vh auto}
-.center-card .logo-panel{padding:28px 24px 24px}
+.center-card .logo-panel{padding:0}
 .center-card-body{padding:20px 24px 24px}
 .center-card h1{font-size:20px;margin:0 0 4px}
 .center-card form,.center-card label,.center-card .msg,.center-card p{text-align:left}
 .center-card .muted{text-align:center}
 .center-card #login-msg{margin-top:10px}
 .brand{display:flex;align-items:center;gap:8px;margin-right:8px;flex:0 0 auto;color:#fff}
-.brand-icon{width:28px;height:28px;display:block;flex:0 0 auto;background:#000;border-radius:4px}
+.brand-icon{width:28px;height:28px;display:block;flex:0 0 auto;border-radius:4px}
 .brand-name{font-weight:600;font-size:14px;letter-spacing:.01em;white-space:nowrap}
 @media(max-width:560px){
   .center-card{margin:6vh auto 24px}
-  .center-card .logo-panel{padding:22px 18px 20px}
   .center-card-body{padding:16px 18px 20px}
-  .login-logo{width:min(200px,78%)}
   .brand{order:0}
   .who{order:1;margin-left:auto}
   .tabs-top{order:2;flex:1 0 100%}
