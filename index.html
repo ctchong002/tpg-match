@@ -81,8 +81,26 @@
       <button data-tab="matches">配对 <span class="en">My Matches</span></button>
       <button data-tab="agents" id="tab-agents" hidden>Agents</button>
     </div>
-    <div class="who"><span id="who"></span> <button class="link" id="out">登出</button></div>
+    <div class="who">
+      <button type="button" class="inbox-btn" id="inbox-btn" aria-label="信箱 Inbox" aria-expanded="false" aria-controls="inbox-panel">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M4 6.5h16A1.5 1.5 0 0 1 21.5 8v9A1.5 1.5 0 0 1 20 18.5H4A1.5 1.5 0 0 1 2.5 17V8A1.5 1.5 0 0 1 4 6.5Z"/>
+          <path d="m3.2 7.2 8.8 6.2 8.8-6.2"/>
+        </svg>
+        <span class="inbox-badge" id="inbox-badge" hidden></span>
+      </button>
+      <span id="who"></span>
+      <button class="link" id="out">登出</button>
+    </div>
   </nav>
+  <div id="inbox-backdrop" hidden></div>
+  <div id="inbox-panel" hidden>
+    <div class="inbox-head">
+      <h2>信箱 Inbox</h2>
+      <button type="button" class="inbox-close" id="inbox-close" aria-label="关闭 Close">×</button>
+    </div>
+    <div id="inbox" class="list"><p class="empty-note">还没有通知。No notifications yet.</p></div>
+  </div>
   <iframe id="fr-industry" class="pane" title="Industry"></iframe>
   <iframe id="fr-residential" class="pane" title="Residential" hidden></iframe>
 
@@ -125,8 +143,6 @@
       <h2>✨ 配对结果 Matches</h2>
       <div id="match-list" class="list"></div>
 
-      <h2>📥 通知 Inbox</h2>
-      <div id="inbox" class="list"><p class="empty-note">还没有通知。No notifications yet.</p></div>
     </div>
   </div>
 

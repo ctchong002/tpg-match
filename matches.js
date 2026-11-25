@@ -1,4 +1,4 @@
-// My Matches tab: WTB/WTR requirement form (strict matching), my requirements, my matches, inbox.
+// My Matches tab: WTB/WTR requirement form (strict matching), my requirements, my matches.
 (function () {
   var TPG = window.TPG, sb = TPG.sb, $ = function (i) { return document.getElementById(i); };
   function esc(s) { return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]; }); }
@@ -170,17 +170,9 @@
       }).join("");
     });
   }
-  function loadInbox() {
-    sb.from("notifications").select("id,kind,title,body,created_at,read_at").order("created_at", { ascending: false }).limit(30).then(function (r) {
-      if (r.error || !r.data.length) return;
-      $("inbox").innerHTML = r.data.map(function (n) { return "<div class='item'><div class='t'>" + (n.read_at ? "" : "🔵 ") + esc(n.title) + "</div><div class='muted'>" + esc(n.body) + "</div><small class='muted'>" + new Date(n.created_at).toLocaleString() + "</small></div>"; }).join("");
-      var unread = r.data.filter(function (n) { return !n.read_at; }).map(function (n) { return n.id; });
-      if (unread.length) sb.from("notifications").update({ read_at: new Date().toISOString() }).in("id", unread).then(function () {});
-    });
-  }
   var formReady = false;
   TPG.loadMatches = function () {
     if (!formReady) { formReady = true; renderForm(); }
-    loadInbox(); loadMatchList().then(loadReqs, loadReqs);
+    loadMatchList().then(loadReqs, loadReqs);
   };
 })();

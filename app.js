@@ -39,6 +39,7 @@
       $("tab-agents").hidden = !(a.role === "owner" || a.role === "admin");
       show("app");
       openTab((location.hash || "#industry").slice(1));
+      refreshInboxBadge();
       sb.from("profiles").update({ last_seen_at: new Date().toISOString() }).eq("email", a.email).then(function () {});
     }).catch(function (e) { $("blocked-msg").textContent = errText(e); show("blocked"); });
   }
@@ -87,6 +88,86 @@
       msg("agent-msg", "已添加 Added ✓ " + row.email, true); $("f-agent").reset(); loadAgents();
     });
   });
+
+
+  // ---------- header inbox (match alerts + company announcements) ----------
+  var inboxOpen = false, inboxTimer = null, inboxItems = [];
+  var KIND_LAB = { match_digest: "配对", broadcast: "通知", expiry_reminder: "提醒", system: "系统" };
+  function setBadge(n) {
+    var b = $("inbox-badge");
+    if (!b) return;
+    if (n > 0) { b.hidden = false; b.textContent = n > 99 ? "99+" : String(n); }
+    else { b.hidden = true; b.textContent = ""; }
+    $("inbox-btn").setAttribute("aria-label", n > 0 ? ("信箱 Inbox，" + n + " 条未读") : "信箱 Inbox");
+  }
+  function whenTxt(iso) {
+    try { return new Date(iso).toLocaleString("en-GB", { timeZone: "Asia/Kuala_Lumpur", day: "2-digit", month: "short", hour: "2-digit", minute: "2-digit", hour12: false }); }
+    catch (e) { return iso; }
+  }
+  function renderInbox() {
+    var el = $("inbox");
+    if (!inboxItems.length) { el.innerHTML = "<p class='empty-note'>还没有通知。No notifications yet.</p>"; return; }
+    el.innerHTML = inboxItems.map(function (n) {
+      var kind = KIND_LAB[n.kind] || n.kind || "";
+      return "<div class='item" + (n.read_at ? "" : " unread") + "'><div class='t'>" +
+        (kind ? "<span class='tag kind'>" + esc(kind) + "</span>" : "") +
+        esc(n.title || "") + "</div>" +
+        (n.body ? "<div class='muted'>" + esc(n.body) + "</div>" : "") +
+        "<small class='muted'>" + esc(whenTxt(n.created_at)) + "</small></div>";
+    }).join("");
+  }
+  function refreshInboxBadge() {
+    return sb.rpc("my_inbox_unread").then(function (r) {
+      if (r.error) return;
+      var n = r.data;
+      if (Array.isArray(n)) n = n[0] && (n[0].my_inbox_unread != null ? n[0].my_inbox_unread : n[0]);
+      setBadge(n == null || n === "" ? 0 : +n);
+    });
+  }
+  function loadInboxPanel() {
+    return sb.rpc("my_inbox", { p_limit: 50 }).then(function (r) {
+      if (r.error) { $("inbox").innerHTML = "<p class='msg'>" + esc(errText(r.error)) + "</p>"; return; }
+      inboxItems = r.data || [];
+      renderInbox();
+      var unread = inboxItems.filter(function (n) { return !n.read_at; }).length;
+      if (!unread) { setBadge(0); return; }
+      return sb.rpc("mark_inbox_read").then(function (m) {
+        if (m.error) return;
+        inboxItems.forEach(function (n) { if (!n.read_at) n.read_at = new Date().toISOString(); });
+        renderInbox();
+        setBadge(0);
+      });
+    });
+  }
+  function placeInboxPanel() {
+    var panel = $("inbox-panel"), btn = $("inbox-btn");
+    if (window.innerWidth < 760) { panel.style.top = ""; panel.style.right = ""; return; }
+    var r = btn.getBoundingClientRect();
+    panel.style.top = Math.round(r.bottom + 6) + "px";
+    panel.style.right = Math.round(Math.max(8, window.innerWidth - r.right)) + "px";
+  }
+  function closeInbox() {
+    if (!inboxOpen) return;
+    inboxOpen = false;
+    $("inbox-panel").hidden = true;
+    $("inbox-backdrop").hidden = true;
+    $("inbox-btn").setAttribute("aria-expanded", "false");
+  }
+  function openInbox() {
+    inboxOpen = true;
+    $("inbox-backdrop").hidden = false;
+    $("inbox-panel").hidden = false;
+    $("inbox-btn").setAttribute("aria-expanded", "true");
+    placeInboxPanel();
+    loadInboxPanel();
+    $("inbox-close").focus();
+  }
+  $("inbox-btn").addEventListener("click", function (e) { e.stopPropagation(); if (inboxOpen) closeInbox(); else openInbox(); });
+  $("inbox-close").addEventListener("click", closeInbox);
+  $("inbox-backdrop").addEventListener("click", closeInbox);
+  document.addEventListener("keydown", function (e) { if (e.key === "Escape") closeInbox(); });
+  window.addEventListener("resize", function () { if (inboxOpen) placeInboxPanel(); });
+  inboxTimer = setInterval(function () { if (!$("app").hidden) refreshInboxBadge(); }, 60000);
 
   // ---------- boot ----------
   sb.auth.onAuthStateChange(function (ev, session) { if (ev === "SIGNED_IN" && session) setTimeout(enter, 0); });
