@@ -1,17 +1,17 @@
 <!doctype html>
-<html lang="zh">
+<html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="robots" content="noindex,nofollow">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>TPG 柔佛住宅配对 Residential Finder</title>
-<meta name="description" content="柔佛新山住宅盘源搜索：公寓、排屋、半独立、独立洋房（出售 / 出租） Johor Bahru residential listings">
+<title>TPG Residential Finder</title>
+<meta name="description" content="Johor Bahru residential listings: apartments, terrace, semi-D and bungalows for sale or rent">
 <meta name="theme-color" content="#000000">
 <link rel="icon" href="icon-192.png">
 <link rel="apple-touch-icon" href="icon-192.png">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-title" content="住宅配对">
+<meta name="apple-mobile-web-app-title" content="Residential Finder">
 <link rel="stylesheet" href="style.css">
 <link rel="stylesheet" href="../assets/fonts.css">
 <link rel="stylesheet" href="../assets/listings.css">
@@ -23,32 +23,32 @@
 </head>
 <body>
 <header>
-  <h1>TPG 柔佛住宅配对 Residential Finder</h1>
-  <div class="sub" id="cover">资料载入中…</div>
+  <h1>TPG Residential Finder</h1>
+  <div class="sub" id="cover">Loading…</div>
 </header>
 <div class="fp" id="panel"><div>
   <div class="fp-top">
-  <div class="search-row"><div class="search"><span class="ico">🔍</span><input id="q" type="search" placeholder="Search 地区 / 项目" enterkeyhint="search" autocomplete="off"></div><button type="button" class="filt-toggle" id="filt-toggle" aria-expanded="false">筛选 Filters</button></div>
+  <div class="search-row"><div class="search"><span class="ico">🔍</span><input id="q" type="search" placeholder="Search area / project" enterkeyhint="search" autocomplete="off"></div><button type="button" class="filt-toggle" id="filt-toggle" aria-expanded="false">Filters</button></div>
   <div class="tabs" id="sr">
-    <button type="button" data-v="" class="on">全部 All</button>
-    <button type="button" data-v="s">Buy 买</button>
-    <button type="button" data-v="r">Rent 租</button>
+    <button type="button" data-v="" class="on">All</button>
+    <button type="button" data-v="s">Buy</button>
+    <button type="button" data-v="r">Rent</button>
   </div>
   <div class="sticky-chips" id="sticky-chips"></div>
   </div>
   <div class="filt-body" id="filt-body">
-  <h2>Property type 类型</h2>
+  <h2>Property Type</h2>
   <div class="tiles" id="cat">
-    <button type="button" class="all on" data-v="">全部类型 All types <small id="n-all"></small></button>
-    <button type="button" class="tile" data-v="ld"><span class="ic">🏠</span>Landed 有地<small id="n-ld"></small></button>
-    <button type="button" class="tile" data-v="hr"><span class="ic">🏢</span>Highrise 高楼<small id="n-hr"></small></button>
+    <button type="button" class="all on" data-v="">All Types <small id="n-all"></small></button>
+    <button type="button" class="tile" data-v="ld"><span class="ic">🏠</span>Landed<small id="n-ld"></small></button>
+    <button type="button" class="tile" data-v="hr"><span class="ic">🏢</span>Highrise<small id="n-hr"></small></button>
   </div>
   <div class="chips" id="chips-ld" hidden>
     <button type="button" class="chip" data-v="lmc">Low Medium Cost</button>
-    <button type="button" class="chip" data-v="terrace">Terrace 排屋</button>
-    <button type="button" class="chip" data-v="cluster">Cluster 田字</button>
-    <button type="button" class="chip" data-v="semi">Semi-D 半独立</button>
-    <button type="button" class="chip" data-v="bung">Bungalow 独立</button>
+    <button type="button" class="chip" data-v="terrace">Terrace</button>
+    <button type="button" class="chip" data-v="cluster">Cluster</button>
+    <button type="button" class="chip" data-v="semi">Semi-D</button>
+    <button type="button" class="chip" data-v="bung">Bungalow</button>
   </div>
   <div class="chips" id="chips-hr" hidden>
     <button type="button" class="chip" data-v="lmc">Low Medium Cost</button>
@@ -56,14 +56,14 @@
     <button type="button" class="chip" data-v="townhouse">Townhouse</button>
   </div>
 
-  <h2>Price 价钱 (RM) <small>租 = 月租 monthly rent</small></h2>
+  <h2>Price (RM) <small>Rent is monthly</small></h2>
   <div class="mm"><input id="minP" type="number" inputmode="numeric" placeholder="Min" aria-label="Min"><span class="dash">–</span><input id="maxP" type="number" inputmode="numeric" placeholder="Max" aria-label="Max"></div>
 
-  <h2>More filters 更多条件</h2>
-  <div class="sec" data-k="ar"><button type="button" class="sh">地区 Area<span class="sv"></span><span class="ar">▼</span></button><div class="sb"><div class="chips" id="areas"></div></div></div>
-  <div class="sec" data-k="bu"><button type="button" class="sh">Built-up 建筑面积 (sf)<span class="sv"></span><span class="ar">▼</span></button><div class="sb"><div class="mm"><input id="bumin" type="number" inputmode="numeric" placeholder="Min" aria-label="Min"><span class="dash">–</span><input id="bumax" type="number" inputmode="numeric" placeholder="Max" aria-label="Max"></div></div></div>
-  <div class="sec" data-k="ld"><button type="button" class="sh">Land Area 土地面积 (sf)<span class="sv"></span><span class="ar">▼</span></button><div class="sb"><div class="mm"><input id="landmin" type="number" inputmode="numeric" placeholder="Min" aria-label="Min"><span class="dash">–</span><input id="landmax" type="number" inputmode="numeric" placeholder="Max" aria-label="Max"></div></div></div>
-  <div class="sec" data-k="beds"><button type="button" class="sh">Bedrooms 房间<span class="sv"></span><span class="ar">▼</span></button><div class="sb"><div class="chips" id="beds">
+  <h2>More Filters</h2>
+  <div class="sec" data-k="ar"><button type="button" class="sh">Area<span class="sv"></span><span class="ar">▼</span></button><div class="sb"><div class="chips" id="areas"></div></div></div>
+  <div class="sec" data-k="bu"><button type="button" class="sh">Built-up (sf)<span class="sv"></span><span class="ar">▼</span></button><div class="sb"><div class="mm"><input id="bumin" type="number" inputmode="numeric" placeholder="Min" aria-label="Min"><span class="dash">–</span><input id="bumax" type="number" inputmode="numeric" placeholder="Max" aria-label="Max"></div></div></div>
+  <div class="sec" data-k="ld"><button type="button" class="sh">Land Area (sf)<span class="sv"></span><span class="ar">▼</span></button><div class="sb"><div class="mm"><input id="landmin" type="number" inputmode="numeric" placeholder="Min" aria-label="Min"><span class="dash">–</span><input id="landmax" type="number" inputmode="numeric" placeholder="Max" aria-label="Max"></div></div></div>
+  <div class="sec" data-k="beds"><button type="button" class="sh">Bedrooms<span class="sv"></span><span class="ar">▼</span></button><div class="sb"><div class="chips" id="beds">
     <button type="button" class="chip" data-v="0">Studio+</button>
     <button type="button" class="chip" data-v="1">1+</button>
     <button type="button" class="chip" data-v="2">2+</button>
@@ -71,27 +71,27 @@
     <button type="button" class="chip" data-v="4">4+</button>
     <button type="button" class="chip" data-v="5">5+</button>
   </div></div></div>
-  <div class="sec" data-k="ten"><button type="button" class="sh">Tenure 地契<span class="sv"></span><span class="ar">▼</span></button><div class="sb"><div class="fld"><select id="ten"><option value="">不限 Any</option><option value="FH">Freehold 永久</option><option value="LH">Leasehold 租赁</option></select></div></div></div>
-  <div class="sec" data-k="kw"><button type="button" class="sh">Keywords 关键字<span class="sv"></span><span class="ar">▼</span></button><div class="sb"><div class="fld"><input id="kw" type="search" placeholder="e.g. corner, renovated, 角头" autocomplete="off"></div><div class="hint">每个字都要在盘的原文里出现 All words must appear in the post.</div></div></div>
-  <div class="sec" data-k="furn"><button type="button" class="sh">Furnishing 家私<span class="sv"></span><span class="ar">▼</span></button><div class="sb"><div class="fld"><select id="furn"><option value="">不限 Any</option><option value="F">全家私 Fully</option><option value="P">半家私 Partly</option><option value="B">空屋 Bare</option></select></div></div></div>
-  <div class="sec" data-k="bumi"><button type="button" class="sh">Bumi / Non Bumi<span class="sv"></span><span class="ar">▼</span></button><div class="sb"><div class="fld"><select id="bumi"><option value="">不限 Any</option><option value="N">Non-Bumi</option><option value="B">Bumi</option></select></div></div></div>
-  <div class="sec" data-k="gr"><button type="button" class="sh">来源群 Group<span class="sv"></span><span class="ar">▼</span></button><div class="sb"><div class="chips" id="groups"></div></div></div>
+  <div class="sec" data-k="ten"><button type="button" class="sh">Tenure<span class="sv"></span><span class="ar">▼</span></button><div class="sb"><div class="fld"><select id="ten"><option value="">Any</option><option value="FH">Freehold</option><option value="LH">Leasehold</option></select></div></div></div>
+  <div class="sec" data-k="kw"><button type="button" class="sh">Keywords<span class="sv"></span><span class="ar">▼</span></button><div class="sb"><div class="fld"><input id="kw" type="search" placeholder="e.g. corner, renovated" autocomplete="off"></div><div class="hint">All words must appear in the original post.</div></div></div>
+  <div class="sec" data-k="furn"><button type="button" class="sh">Furnishing<span class="sv"></span><span class="ar">▼</span></button><div class="sb"><div class="fld"><select id="furn"><option value="">Any</option><option value="F">Fully Furnished</option><option value="P">Partly Furnished</option><option value="B">Bare</option></select></div></div></div>
+  <div class="sec" data-k="bumi"><button type="button" class="sh">Bumi / Non Bumi<span class="sv"></span><span class="ar">▼</span></button><div class="sb"><div class="fld"><select id="bumi"><option value="">Any</option><option value="N">Non-Bumi</option><option value="B">Bumi</option></select></div></div></div>
+  <div class="sec" data-k="gr"><button type="button" class="sh">Source Group<span class="sv"></span><span class="ar">▼</span></button><div class="sb"><div class="chips" id="groups"></div></div></div>
 
-  <div class="acts"><button type="button" id="reset">重设 Reset</button><button type="button" class="pri" id="go">看结果 Show results</button></div>
+  <div class="acts"><button type="button" id="reset">Reset</button><button type="button" class="pri" id="go">Show Results</button></div>
   </div>
 </div></div>
-<div id="info"><span id="cnt">载入中 Loading…</span>
-  <select id="sort" aria-label="排序 sort">
-    <option value="n">最新 Newest</option>
-    <option value="p">价钱 低→高</option>
-    <option value="pd">价钱 高→低</option>
-    <option value="psf">psf 低→高</option>
-    <option value="bu">屋身 大→小</option>
-    <option value="ld">Land Area 大→小</option>
+<div id="info"><span id="cnt">Loading…</span>
+  <select id="sort" aria-label="Sort">
+    <option value="n">Newest</option>
+    <option value="p">Price: Low to High</option>
+    <option value="pd">Price: High to Low</option>
+    <option value="psf">psf: Low to High</option>
+    <option value="bu">Built-up: Large to Small</option>
+    <option value="ld">Land Area: Large to Small</option>
   </select>
 </div>
 <div id="list"></div>
-<button id="more" type="button" hidden>显示更多 Show more</button>
+<button id="more" type="button" hidden>Show More</button>
 <footer id="foot"></footer>
 
 <script type="text/plain" id="app">
@@ -100,18 +100,18 @@ var D=window.RES,L=D.L,$=function(i){return document.getElementById(i)},tmr,show
 var BASE=Date.UTC(2026,0,1);
 function dstr(d){var x=new Date(BASE+d*864e5);return x.getUTCDate()+"/"+(x.getUTCMonth()+1)+"/"+String(x.getUTCFullYear()).slice(2)}
 var TY=D.types,APT={0:1,1:1,2:1,3:1,4:1,5:1,6:1},HR={0:1,1:1,2:1,3:1,4:1,5:1,6:1,11:1},LD={7:1,8:1,9:1,10:1,12:1};
-var TZH={"condo":"公寓 Condo","serviced apartment":"服务式公寓 Serviced Apt","apartment":"Apartment","flat":"组屋 Flat","penthouse":"Penthouse","duplex/loft":"Duplex/Loft","highrise (unspecified)":"高楼 Highrise","terrace":"排屋 Terrace","cluster":"田字 Cluster","semi-D":"半独立 Semi-D","bungalow":"独立 Bungalow","townhouse":"Townhouse","residential land":"住宅地 Res. land","room":"房间 Room","":"住宅"};
+var TZH={"condo":"Condo","serviced apartment":"Serviced Apt","apartment":"Apartment","flat":"Flat","penthouse":"Penthouse","duplex/loft":"Duplex/Loft","highrise (unspecified)":"Highrise","terrace":"Terrace","cluster":"Cluster","semi-D":"Semi-D","bungalow":"Bungalow","townhouse":"Townhouse","residential land":"Residential Land","room":"Room","":"Residential"};
 var AC={};L.forEach(function(r){(r[27]&&r[27].length?r[27]:[r[17]]).forEach(function(i){AC[i]=(AC[i]||0)+1})});
 var areaList=D.areas.map(function(a,i){return {i:i,a:a,n:AC[i]||0}}).filter(function(x){return x.n>=5}).sort(function(a,b){return b.n-a.n});
 areaList.forEach(function(x){var b=document.createElement("button");b.type="button";b.className="chip";b.dataset.v=String(x.i);b.textContent=x.a+" "+x.n;$("areas").appendChild(b)});
 D.groups.forEach(function(g,i){var b=document.createElement("button");b.type="button";b.className="chip";b.dataset.v=String(i);b.textContent=g;$("groups").appendChild(b)});
 function fmtN(n){return Math.round(n).toLocaleString("en-US")}
-function srN(pred){var s=0,r=0;L.forEach(function(x){if(!pred(x))return;if(x[1]==="S"||x[1]==="B")s++;if(x[1]==="R"||x[1]==="B")r++});return "卖 "+fmtN(s)+" · 租 "+fmtN(r)}
+function srN(pred){var s=0,r=0;L.forEach(function(x){if(!pred(x))return;if(x[1]==="S"||x[1]==="B")s++;if(x[1]==="R"||x[1]==="B")r++});return "Sale "+fmtN(s)+" · Rent "+fmtN(r)}
 $("n-all").textContent=fmtN(L.length)+" · "+srN(function(){return true});
 $("n-ld").textContent=fmtN(L.filter(function(x){return LD[x[2]]}).length)+" · "+srN(function(x){return LD[x[2]]});
 $("n-hr").textContent=fmtN(L.filter(function(x){return HR[x[2]]}).length)+" · "+srN(function(x){return HR[x[2]]});
-$("cover").textContent="资料 "+D.meta.since.split("-").reverse().join("/")+" – "+(D.meta.last||"").split("-").reverse().join("/")+" · 共 "+fmtN(D.meta.n)+" 个盘 listings · 更新 "+(D.meta.updated||"").slice(0,10);
-$("foot").innerHTML="资料来自 WhatsApp 群组盘源，仅供参考，请向原 agent 核实。Listings from WhatsApp groups, verify with the agent.<br>The Roof Realty / The Pillars Group · CT Chong · 更新 "+D.meta.updated;
+$("cover").textContent=D.meta.since.split("-").reverse().join("/")+" – "+(D.meta.last||"").split("-").reverse().join("/")+" · "+fmtN(D.meta.n)+" listings · Updated "+(D.meta.updated||"").slice(0,10);
+$("foot").innerHTML="Listings are from WhatsApp groups, for reference only. Please verify with the agent.<br>The Roof Realty / The Pillars Group · CT Chong · Updated "+D.meta.updated;
 
 function money(s){if(!s)return 0;s=String(s).toLowerCase().replace(/[,rm\s]/g,"");var m=s.match(/^([\d.]+)(k|m|mil|万)?$/);if(!m)return 0;var v=parseFloat(m[1]);return m[2]==="k"?v*1e3:(m[2]==="m"||m[2]==="mil")?v*1e6:m[2]==="万"?v*1e4:v}
 function on(id){return [].filter.call($(id).children,function(c){return c.classList.contains("on")&&c.dataset.v!==undefined&&c.dataset.v!==""}).map(function(c){return c.dataset.v})}
@@ -199,7 +199,7 @@ function applySearch(list,q){
 function stickyChips(){
   var el=$("sticky-chips");if(!el)return;
   var bits=[],sr=tabSR(),q=$("q").value.trim();
-  if(sr==="R")bits.push("租");else if(sr==="S")bits.push("买");
+  if(sr==="R")bits.push("Rent");else if(sr==="S")bits.push("Buy");
   var cb=$("cat").querySelector(".on");
   if(cb&&cb.dataset.v){var lab=cb.textContent.replace(/\s+/g," ").trim().replace(/\d[\d,.]*.*$/,"").trim();bits.push(lab)}
   (typeof on==="function"?on("areas"):[]).slice(0,4).forEach(function(a){var n=D.areas[+a]||a;bits.push(Array.isArray(n)?n[0]||n:String(n))});
@@ -242,14 +242,14 @@ function run(){
     if(s==="ld")return (b[6]||0)-(a[6]||0);
     if(s==="psf"){return (a[16]||1e9)-(b[16]||1e9)}
     var pa=price(a,sr)||(s==="pd"?0:1e12),pb=price(b,sr)||(s==="pd"?0:1e12);return s==="pd"?pb-pa:pa-pb});
-  $("cnt").textContent="找到 "+res.length.toLocaleString()+" 个盘";
-  $("go").textContent="看 "+fmtN(res.length)+" 个结果 Show results";
+  $("cnt").textContent=res.length.toLocaleString()+" listings found";
+  $("go").textContent="Show "+fmtN(res.length)+" Results";
   stickyChips();save();render(false);
 }
 function esc(s){return String(s).replace(/[&<>"]/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]})}
 function fmtP(v){return v>=1e6?"RM"+(v/1e6).toFixed(v%1e6?2:0).replace(/\.?0+$/,"")+"mil":"RM"+v.toLocaleString()}
-function wa(ag,r){if(!ag[1])return esc(ag[0]||"?")+" <span class='small'>(无电话 no phone)</span>";
-  var t=encodeURIComponent("Hi "+(ag[0]||"")+", 请问这个单位还有吗? "+(r[18]||D.areas[r[17]]||"")+" "+(r[14]&&CURSR!=="R"?fmtP(r[14]):"")+(r[15]&&CURSR!=="S"?" RM"+r[15]+"/月":""));
+function wa(ag,r){if(!ag[1])return esc(ag[0]||"?")+" <span class='small'>(no phone)</span>";
+  var t=encodeURIComponent("Hi "+(ag[0]||"")+", is this unit still available? "+(r[18]||D.areas[r[17]]||"")+" "+(r[14]&&CURSR!=="R"?fmtP(r[14]):"")+(r[15]&&CURSR!=="S"?" RM"+r[15]+"/mo":""));
   return "<a href='https://wa.me/"+ag[1]+"?text="+t+"' target='_blank' rel='noopener'>"+esc(ag[0]||ag[1])+" · +"+ag[1]+" 💬</a>"}
 function ico(k){
   var p={bu:'<path d="M4 20V8.5L12 4l8 4.5V20"/><path d="M9 20v-6h6v6"/>',
@@ -261,39 +261,39 @@ function ico(k){
 }
 function isNew(r){var last=BASE+r[24]*864e5;var ref=(D.meta&&D.meta.last)?Date.parse(D.meta.last+"T00:00:00Z"):last;return (ref-last)<=3*864e5 && (ref-last)>=-864e5;}
 function card(r,idx){
-  var t=TY[r[2]],title=r[18]||D.areas[r[17]]||"(未注明项目)";
+  var t=TY[r[2]],title=r[18]||D.areas[r[17]]||"(Unnamed project)";
   var typ=[TZH[t]||t];
-  if(r[3])typ.push(r[3]+" 层 storey");if(r[4])typ.push(/^L/.test(r[4])?"Level "+r[4].slice(1):r[4]+" floor");if(r[5])typ.push(r[5]);
-  if(r[11])typ.push({F:"全家私 Fully furnished",P:"半家私 Partly furnished",B:"空屋 Bare"}[r[11]]);
-  if(r[12])typ.push(r[12]==="FH"?"Freehold 永久":"Leasehold 租赁");
+  if(r[3])typ.push(r[3]+"-storey");if(r[4])typ.push(/^L/.test(r[4])?"Level "+r[4].slice(1):r[4]+" floor");if(r[5])typ.push(r[5]);
+  if(r[11])typ.push({F:"Fully Furnished",P:"Partly Furnished",B:"Bare"}[r[11]]);
+  if(r[12])typ.push(r[12]==="FH"?"Freehold":"Leasehold");
   if(r[13])typ.push({N:"Non-Bumi",B:"Bumi",M:"Bumi"}[r[13]]);
-  var pr=[];if(r[14]&&CURSR!=="R")pr.push(fmtP(r[14])+(r[16]?" (RM"+r[16]+" psf)":""));if(r[15]&&CURSR!=="S")pr.push("租 RM"+r[15].toLocaleString()+"/月");
-  var kind={S:"出售 Sale",R:"出租 Rent",B:"租/卖 Rent & Sale"}[r[1]],ag=D.agents[r[19]];
+  var pr=[];if(r[14]&&CURSR!=="R")pr.push(fmtP(r[14])+(r[16]?" (RM"+r[16]+" psf)":""));if(r[15]&&CURSR!=="S")pr.push("Rent RM"+r[15].toLocaleString()+"/mo");
+  var kind={S:"Sale",R:"Rent",B:"Rent & Sale"}[r[1]],ag=D.agents[r[19]];
   var srClass=r[1]==="R"?"rent":"sale";
   var h="<article class='card'><div class='card-top'><div class='badges'>";
-  if(isNew(r))h+="<span class='badge new'>新</span>";
+  if(isNew(r))h+="<span class='badge new'>New</span>";
   if(kind)h+="<span class='badge "+srClass+"'>"+esc(kind)+"</span>";
   h+="</div><time>"+dstr(r[24])+"</time></div>";
   h+="<h3>"+esc(title)+"</h3><p class='type'>"+esc(typ.join(" · "))+"</p>";
   h+="<ul class='specs'>";
   if(r[7])h+="<li>"+ico("bu")+" <b>"+r[7].toLocaleString()+"</b>&nbsp;sf BU</li>";
   if(r[6])h+="<li>"+ico("land")+" <b>"+r[6].toLocaleString()+"</b>&nbsp;sf Land Area</li>";
-  if(r[8]>=0)h+="<li>"+ico("bed")+" <b>"+esc(r[8]===0&&!r[9]?"Studio":String(r[9]||r[8]))+"</b>&nbsp;"+(r[8]===0&&!r[9]?"":"房")+(r[10]?" "+r[10]+" 厕":"")+"</li>";
+  if(r[8]>=0)h+="<li>"+ico("bed")+" <b>"+esc(r[8]===0&&!r[9]?"Studio":String(r[9]||r[8]))+"</b>&nbsp;"+(r[8]===0&&!r[9]?"":" bed")+(r[10]?" · "+r[10]+" bath":"")+"</li>";
   h+="</ul>";
-  h+="<div class='price-row'><span class='amt'>"+(pr[0]||"价格未注明 Price n/a")+"</span>"+(pr[1]?"<span class='per'>"+pr[1]+"</span>":"")+"</div>";
-  if(r[26])h+="<div class='small'>已有租客 Tenanted · 租金 RM"+r[26].toLocaleString()+"/月 <small>(出售单位，租金仅供参考)</small></div>";
+  h+="<div class='price-row'><span class='amt'>"+(pr[0]||"Price n/a")+"</span>"+(pr[1]?"<span class='per'>"+pr[1]+"</span>":"")+"</div>";
+  if(r[26])h+="<div class='small'>Tenanted · Rent RM"+r[26].toLocaleString()+"/mo <small>(indicative rent on a sale listing)</small></div>";
   if(r[17]>=0||(r[27]&&r[27].length))h+="<div class='small'>📍 "+esc(tagNames(r).join(" · "))+"</div>";
   h+="<div class='agent'><div class='ag'>"+wa(ag,r)+"</div></div>";
-  h+="<div class='small'>"+dstr(r[20])+" · "+esc(D.groups[r[21]]||"")+" · 共出现 "+r[23]+" 次 · 最近 "+dstr(r[24])+" · "+r[0]+"</div>";
-  if(r[22].length){h+="<details class='oth'><summary>也有发 Also posted by ("+r[22].length+")</summary>";
+  h+="<div class='small'>"+dstr(r[20])+" · "+esc(D.groups[r[21]]||"")+" · Posted "+r[23]+" times · Latest "+dstr(r[24])+" · "+r[0]+"</div>";
+  if(r[22].length){h+="<details class='oth'><summary>Also posted by ("+r[22].length+")</summary>";
     r[22].forEach(function(a){var g=D.agents[a[0]];h+="<div>"+wa(g,r)+" <span class='small'>"+dstr(a[1])+" · "+esc(D.groups[a[2]]||"")+"</span></div>"});h+="</details>"}
-  h+="<details class='orig'><summary>看原文 Original post</summary><pre id='raw"+idx+"'></pre><button type='button' class='copy-orig' id='cp"+idx+"' data-i='"+idx+"'>📋 复制全文 Copy</button></details></article>";
+  h+="<details class='orig'><summary>Original Post</summary><pre id='raw"+idx+"'></pre><button type='button' class='copy-orig' id='cp"+idx+"' data-i='"+idx+"'>Copy Post</button></details></article>";
   return h;
 }
 function render(more){var el=$("list");if(!more){el.innerHTML="";shown=0}
   var n=Math.min(res.length,shown+40),h="";for(var i=shown;i<n;i++)h+=card(res[i],i);el.insertAdjacentHTML("beforeend",h);shown=n;
-  if(!res.length)el.innerHTML="<div class='empty'>没有符合的单位，试试放宽条件 · No match, try fewer filters</div>";
-  var b=$("more");b.hidden=shown>=res.length;b.textContent="显示更多 Show more"+(shown<res.length?" ("+(res.length-shown)+")":"");
+  if(!res.length)el.innerHTML="<div class='empty'>No matching listings. Try widening the filters.</div>";
+  var b=$("more");b.hidden=shown>=res.length;b.textContent="Show More"+(shown<res.length?" ("+(res.length-shown)+")":"");
 }
 var rawLoading=null;
 function loadRaw(cb){if(window.RAW)return cb();if(rawLoading){rawLoading.push(cb);return}rawLoading=[cb];var s=document.createElement("script");s.src="raw.js?v="+encodeURIComponent(D.meta.updated);
@@ -307,14 +307,14 @@ function copyText(t,done){var fin=false,f=function(ok){if(!fin){fin=true;done(ok
 $("list").addEventListener("click",function(e){
   var c=e.target.closest(".copy-orig");
   if(c){var j=+c.dataset.i,t=(window.RAW&&window.RAW[IDX[res[j][0]]])||($("raw"+j)&&$("raw"+j).textContent)||"";
-    copyText(t,function(ok){c.textContent=ok?"已复制 ✓ Copied":"复制失败 请长按选取 Copy failed";c.classList.toggle("ok",ok);if(!ok){try{var rg=document.createRange();rg.selectNodeContents($("raw"+j));var sl=getSelection();sl.removeAllRanges();sl.addRange(rg)}catch(x){}}clearTimeout(c._t);c._t=setTimeout(function(){c.textContent="📋 复制全文 Copy";c.classList.remove("ok")},2000)})}
+    copyText(t,function(ok){c.textContent=ok?"Copied ✓":"Copy failed. Press and hold to select.";c.classList.toggle("ok",ok);if(!ok){try{var rg=document.createRange();rg.selectNodeContents($("raw"+j));var sl=getSelection();sl.removeAllRanges();sl.addRange(rg)}catch(x){}}clearTimeout(c._t);c._t=setTimeout(function(){c.textContent="Copy Post";c.classList.remove("ok")},2000)})}
 });
 $("list").addEventListener("toggle",function(e){
   var d=e.target.closest("details.orig");if(!d||!d.open)return;
   var pre=d.querySelector("pre");if(!pre||pre.dataset.loaded)return;
   var i=+((d.querySelector(".copy-orig")||{}).dataset||{}).i;
   if(isNaN(i))return;
-  pre.textContent="载入中 Loading…";
+  pre.textContent="Loading…";
   loadRaw(function(){pre.textContent=window.RAW[IDX[res[i][0]]]||"";pre.dataset.loaded="1"});
 },true);
 $("more").addEventListener("click",function(){render(true)});

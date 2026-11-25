@@ -7,10 +7,10 @@
   if (!P) { location.replace("../#" + cat); return; }
   var cover = document.getElementById("cover");
   function start() { var s = document.createElement("script"); s.textContent = document.getElementById("app").textContent; document.body.appendChild(s); }
-  P.getData(cat, function (c, n) { if (cover) cover.textContent = "载入中 Loading… " + n.toLocaleString("en-US"); }).then(function (d) {
+  P.getData(cat, function (c, n) { if (cover) cover.textContent = "Loading… " + n.toLocaleString("en-US"); }).then(function (d) {
     Object.keys(d).forEach(function (k) { window[k] = d[k]; });
     start();
   }).catch(function (e) {
-    if (cover) cover.textContent = "资料载入失败 Data failed to load: " + (e && e.message || e);
+    if (cover) cover.textContent = "Data failed to load: " + (e && e.message || e);
   });
 })();

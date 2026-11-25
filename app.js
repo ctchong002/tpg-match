@@ -5,22 +5,22 @@
   function msg(id, t, ok) { var e = $(id); e.textContent = t || ""; e.className = "msg" + (ok ? " ok" : ""); }
   function errText(e) {
     var m = (e && (e.message || e.msg)) || String(e);
-    if (/Database error saving new user|not authori[sz]ed|42501/i.test(m)) return "这个 email 没有被授权，请联系管理员。This email is not authorised.";
-    if (/rate limit|too many|security purposes/i.test(m)) return "请求太频繁，请稍后再试。Too many requests, please wait and retry. (" + m + ")";
+    if (/Database error saving new user|not authori[sz]ed|42501/i.test(m)) return "This email is not authorised. Please contact an admin.";
+    if (/rate limit|too many|security purposes/i.test(m)) return "Too many requests. Please wait and try again. (" + m + ")";
     return m;
   }
 
   // ---------- login ----------
   var email = "";
   $("f-email").addEventListener("submit", function (ev) {
-    ev.preventDefault(); email = $("email").value.trim().toLowerCase(); msg("login-msg", "发送中… Sending…", true);
+    ev.preventDefault(); email = $("email").value.trim().toLowerCase(); msg("login-msg", "Sending…", true);
     sb.auth.signInWithOtp({ email: email, options: { shouldCreateUser: true, emailRedirectTo: location.origin + location.pathname } }).then(function (r) {
       if (r.error) return msg("login-msg", errText(r.error));
       $("sent-to").textContent = email; $("f-email").hidden = true; $("f-code").hidden = false; msg("login-msg", ""); $("code").focus();
     });
   });
   $("f-code").addEventListener("submit", function (ev) {
-    ev.preventDefault(); msg("login-msg", "验证中… Verifying…", true);
+    ev.preventDefault(); msg("login-msg", "Verifying…", true);
     sb.auth.verifyOtp({ email: email, token: $("code").value.trim(), type: "email" }).then(function (r) {
       if (r.error) return msg("login-msg", errText(r.error));
       msg("login-msg", ""); enter();
@@ -67,8 +67,8 @@
       var on = a.status === "active";
       return "<div class='item'><div class='t'>" + esc(a.full_name || "-") + " <span class='tag'>" + a.role + "</span><span class='tag " + (on ? "" : "off") + "'>" + (on ? "active" : "inactive") + "</span></div>" +
         "<div class='muted'>" + esc(a.email) + (a.phone ? " · " + esc(a.phone) : "") + "</div>" +
-        (a.role === "owner" ? "" : "<div style='margin-top:6px'><button class='btn sm " + (on ? "grey" : "") + "' data-toggle='" + esc(a.email) + "' data-to='" + (on ? "inactive" : "active") + "'>" + (on ? "设为 Inactive" : "恢复 Active") + "</button></div>") + "</div>";
-    }).join("") || "<p class='muted'>没有资料</p>";
+        (a.role === "owner" ? "" : "<div style='margin-top:6px'><button class='btn sm " + (on ? "grey" : "") + "' data-toggle='" + esc(a.email) + "' data-to='" + (on ? "inactive" : "active") + "'>" + (on ? "Set Inactive" : "Restore Active") + "</button></div>") + "</div>";
+    }).join("") || "<p class='muted'>No agents yet.</p>";
   }
   function loadAgents() {
     sb.from("allowlist").select("email,full_name,phone,role,status,created_at").order("created_at").then(function (r) {
@@ -84,21 +84,21 @@
     ev.preventDefault();
     var row = { email: $("a-email").value.trim().toLowerCase(), full_name: $("a-name").value.trim() || null, phone: $("a-phone").value.trim() || null, role: $("a-role").value };
     sb.from("allowlist").insert(row).then(function (r) {
-      if (r.error) return msg("agent-msg", /duplicate/i.test(r.error.message) ? "这个 email 已经在名单里。Already on the list." : errText(r.error));
-      msg("agent-msg", "已添加 Added ✓ " + row.email, true); $("f-agent").reset(); loadAgents();
+      if (r.error) return msg("agent-msg", /duplicate/i.test(r.error.message) ? "This email is already on the list." : errText(r.error));
+      msg("agent-msg", "Added ✓ " + row.email, true); $("f-agent").reset(); loadAgents();
     });
   });
 
 
   // ---------- header inbox (match alerts + company announcements) ----------
   var inboxOpen = false, inboxTimer = null, inboxItems = [];
-  var KIND_LAB = { match_digest: "配对", broadcast: "通知", expiry_reminder: "提醒", system: "系统" };
+  var KIND_LAB = { match_digest: "Match", broadcast: "Notice", expiry_reminder: "Reminder", system: "System" };
   function setBadge(n) {
     var b = $("inbox-badge");
     if (!b) return;
     if (n > 0) { b.hidden = false; b.textContent = n > 99 ? "99+" : String(n); }
     else { b.hidden = true; b.textContent = ""; }
-    $("inbox-btn").setAttribute("aria-label", n > 0 ? ("信箱 Inbox，" + n + " 条未读") : "信箱 Inbox");
+    $("inbox-btn").setAttribute("aria-label", n > 0 ? ("Inbox, " + n + " unread") : "Inbox");
   }
   function whenTxt(iso) {
     try { return new Date(iso).toLocaleString("en-GB", { timeZone: "Asia/Kuala_Lumpur", day: "2-digit", month: "short", hour: "2-digit", minute: "2-digit", hour12: false }); }
@@ -106,7 +106,7 @@
   }
   function renderInbox() {
     var el = $("inbox");
-    if (!inboxItems.length) { el.innerHTML = "<p class='empty-note'>还没有通知。No notifications yet.</p>"; return; }
+    if (!inboxItems.length) { el.innerHTML = "<p class='empty-note'>No notifications yet.</p>"; return; }
     el.innerHTML = inboxItems.map(function (n) {
       var kind = KIND_LAB[n.kind] || n.kind || "";
       return "<div class='item" + (n.read_at ? "" : " unread") + "'><div class='t'>" +
