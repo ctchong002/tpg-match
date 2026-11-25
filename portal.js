@@ -1,4 +1,4 @@
-// TPG Match portal core: auth, access check, cached incremental listing sync.
+// TPG Pillar's AI portal core: auth, access check, cached incremental listing sync.
 (function () {
   var C = window.TPG_CONFIG;
   var sb = window.supabase.createClient(C.url, C.key, {
