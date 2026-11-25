@@ -10,7 +10,7 @@
   function landTxt(v) { return v >= AC ? fmt(Math.round(v / AC * 100) / 100) + " acre" : fmt(v) + " sf"; }
   function rng(a, b, f) { return a == null && b == null ? "" : a == null ? "≤ " + f(b) : b == null ? "≥ " + f(a) : f(a) + " – " + f(b); }
   var ZON = { L: "轻工业 Light", M: "中工业 Medium", H: "重工业 Heavy" }, FUR = { F: "全家私 Fully", P: "半家私 Partly", B: "空屋 Bare" },
-      LOT = { N: "Non-Bumi", B: "Bumi lot", M: "Bumi lot" }, TEN = { freehold: "Freehold", leasehold: "Leasehold" },
+      LOT = { N: "Non-Bumi", B: "Bumi", M: "Bumi" }, TEN = { freehold: "Freehold", leasehold: "Leasehold" },
       TYP = { Highrise: "Highrise 高楼", Landed: "Landed 有地", Industry: "Industry 工业", Commercial: "Commercial 商业", Land: "Land 地皮", "Business Takeover": "Business Takeover 生意出顶" };
 
   var st = { kind: "WTR", cat: "industry", types: [], areas: [], zon: [], fur: [], lot: [], editing: null };
@@ -30,6 +30,9 @@
     var ind = st.cat === "industry";
     $("fs-ind").hidden = !ind; $("fs-res").hidden = ind;
     $("l-price").firstElementChild.textContent = st.kind === "WTR" ? "月租 Monthly rent (RM)" : "售价 Sale price (RM)";
+    // Sale (WTB) does not use furnishing; rent (WTR) keeps it.
+    if (st.kind !== "WTR") st.fur = [];
+    $("r-fur-wrap").hidden = st.kind !== "WTR";
     $("r-zon").innerHTML = chipsHtml(["L", "M", "H"], st.zon, ZON);
     $("r-fur").innerHTML = chipsHtml(["F", "P", "B"], st.fur, FUR);
     $("r-lot").innerHTML = chipsHtml(["N", "B"], st.lot, LOT);
@@ -45,7 +48,7 @@
     var q = $("r-area-q").value.trim().toLowerCase();
     var list = o.areas.filter(function (a) { return st.areas.indexOf(a.v) < 0 && (!q || a.v.toLowerCase().indexOf(q) >= 0); });
     if (!q) list = list.slice().sort(function (a, b) { return b.n - a.n; });
-    $("r-area-sug").innerHTML = list.slice(0, 40).map(function (a) { return "<button type='button' data-v='" + esc(a.v) + "'><span>" + esc(a.v) + "</span><small>" + a.n + " 盘</small></button>"; }).join("") || "<div class='muted' style='padding:8px 10px;font-size:13px'>没有这个地区 No such area</div>";
+    $("r-area-sug").innerHTML = list.slice(0, 40).map(function (a) { return "<button type='button' data-v='" + esc(a.v) + "'><span>" + esc(a.v) + "</span></button>"; }).join("") || "<div class='muted' style='padding:8px 10px;font-size:13px'>没有这个地区 No such area</div>";
   }
   function toggle(arr, v) { var i = arr.indexOf(v); if (i >= 0) arr.splice(i, 1); else arr.push(v); }
 
@@ -77,8 +80,9 @@
       land_min: landVal("r-lmin"), land_max: landVal("r-lmax"), client_note: $("r-note").value.trim() || null,
       power_min: ind ? num("r-amp") : null, ceiling_min_m: ind ? num("r-ceil") : null, ceiling_min_ft: null, floor_load_min: ind ? num("r-fl") : null,
       zonings: ind ? st.zon.slice() : [], tenure: (ind ? $("r-ten-i").value : $("r-ten-r").value) || null,
-      bedrooms_min: !ind && $("r-bed").value !== "" ? +$("r-bed").value : null, furnishings: ind ? [] : st.fur.slice(), lot_types: ind ? [] : st.lot.slice() };
+      bedrooms_min: !ind && $("r-bed").value !== "" ? +$("r-bed").value : null, furnishings: (!ind && st.kind === "WTR") ? st.fur.slice() : [], lot_types: ind ? [] : st.lot.slice() };
     if ([row.price_min, row.price_max, row.built_up_min, row.built_up_max, row.land_min, row.land_max].some(function (v) { return v != null && (isNaN(v) || v < 0); })) return msg("数字不对 Invalid number");
+    if ((row.price_min != null && row.price_max != null && row.price_min > row.price_max) || (row.built_up_min != null && row.built_up_max != null && row.built_up_min > row.built_up_max) || (row.land_min != null && row.land_max != null && row.land_min > row.land_max)) return msg("Min 不能大于 Max (min cannot be greater than max)");
     msg("保存中… Saving…", true);
     var q = st.editing ? sb.from("requirements").update(row).eq("id", st.editing) : sb.from("requirements").insert(row);
     q.then(function (r) {
@@ -100,7 +104,7 @@
     if (q.zonings && q.zonings.length) p.push(q.zonings.map(function (z) { return ZON[z]; }).join("/"));
     if (q.tenure) p.push(TEN[q.tenure]);
     if (q.bedrooms_min != null) p.push(q.bedrooms_min === 0 ? "Studio+" : "≥ " + q.bedrooms_min + " 房");
-    if (q.furnishings && q.furnishings.length) p.push(q.furnishings.map(function (z) { return FUR[z]; }).join("/"));
+    if (q.kind === "WTR" && q.furnishings && q.furnishings.length) p.push(q.furnishings.map(function (z) { return FUR[z]; }).join("/"));
     if (q.lot_types && q.lot_types.length) p.push(q.lot_types.map(function (z) { return LOT[z]; }).join("/"));
     return p.filter(Boolean).join(" · ");
   }

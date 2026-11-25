@@ -57,12 +57,12 @@
   </div>
 
   <h2>Price 价钱 (RM) <small>租 = 月租 monthly rent</small></h2>
-  <div class="mm"><input id="minP" type="number" inputmode="numeric" placeholder="No Min" aria-label="No Min"><span class="dash">–</span><input id="maxP" type="number" inputmode="numeric" placeholder="No Max" aria-label="No Max"></div>
+  <div class="mm"><input id="minP" type="number" inputmode="numeric" placeholder="Min" aria-label="Min"><span class="dash">–</span><input id="maxP" type="number" inputmode="numeric" placeholder="Max" aria-label="Max"></div>
 
   <h2>More filters 更多条件</h2>
   <div class="sec" data-k="ar"><button type="button" class="sh">地区 Area<span class="sv"></span><span class="ar">▼</span></button><div class="sb"><div class="chips" id="areas"></div></div></div>
-  <div class="sec" data-k="bu"><button type="button" class="sh">Built-up 建筑面积 (sf)<span class="sv"></span><span class="ar">▼</span></button><div class="sb"><div class="mm"><input id="bumin" type="number" inputmode="numeric" placeholder="No Min" aria-label="No Min"><span class="dash">–</span><input id="bumax" type="number" inputmode="numeric" placeholder="No Max" aria-label="No Max"></div></div></div>
-  <div class="sec" data-k="ld"><button type="button" class="sh">Land Area 土地面积 (sf)<span class="sv"></span><span class="ar">▼</span></button><div class="sb"><div class="mm"><input id="landmin" type="number" inputmode="numeric" placeholder="No Min" aria-label="No Min"><span class="dash">–</span><input id="landmax" type="number" inputmode="numeric" placeholder="No Max" aria-label="No Max"></div></div></div>
+  <div class="sec" data-k="bu"><button type="button" class="sh">Built-up 建筑面积 (sf)<span class="sv"></span><span class="ar">▼</span></button><div class="sb"><div class="mm"><input id="bumin" type="number" inputmode="numeric" placeholder="Min" aria-label="Min"><span class="dash">–</span><input id="bumax" type="number" inputmode="numeric" placeholder="Max" aria-label="Max"></div></div></div>
+  <div class="sec" data-k="ld"><button type="button" class="sh">Land Area 土地面积 (sf)<span class="sv"></span><span class="ar">▼</span></button><div class="sb"><div class="mm"><input id="landmin" type="number" inputmode="numeric" placeholder="Min" aria-label="Min"><span class="dash">–</span><input id="landmax" type="number" inputmode="numeric" placeholder="Max" aria-label="Max"></div></div></div>
   <div class="sec" data-k="beds"><button type="button" class="sh">Bedrooms 房间<span class="sv"></span><span class="ar">▼</span></button><div class="sb"><div class="chips" id="beds">
     <button type="button" class="chip" data-v="0">Studio+</button>
     <button type="button" class="chip" data-v="1">1+</button>
@@ -74,7 +74,7 @@
   <div class="sec" data-k="ten"><button type="button" class="sh">Tenure 地契<span class="sv"></span><span class="ar">▼</span></button><div class="sb"><div class="fld"><select id="ten"><option value="">不限 Any</option><option value="FH">Freehold 永久</option><option value="LH">Leasehold 租赁</option></select></div></div></div>
   <div class="sec" data-k="kw"><button type="button" class="sh">Keywords 关键字<span class="sv"></span><span class="ar">▼</span></button><div class="sb"><div class="fld"><input id="kw" type="search" placeholder="e.g. corner, renovated, 角头" autocomplete="off"></div><div class="hint">每个字都要在盘的原文里出现 All words must appear in the post.</div></div></div>
   <div class="sec" data-k="furn"><button type="button" class="sh">Furnishing 家私<span class="sv"></span><span class="ar">▼</span></button><div class="sb"><div class="fld"><select id="furn"><option value="">不限 Any</option><option value="F">全家私 Fully</option><option value="P">半家私 Partly</option><option value="B">空屋 Bare</option></select></div></div></div>
-  <div class="sec" data-k="bumi"><button type="button" class="sh">Bumi 土著<span class="sv"></span><span class="ar">▼</span></button><div class="sb"><div class="fld"><select id="bumi"><option value="">不限 Any</option><option value="N">Non-Bumi / Intl</option><option value="B">Bumi lot 土著</option></select></div></div></div>
+  <div class="sec" data-k="bumi"><button type="button" class="sh">Bumi / Non Bumi<span class="sv"></span><span class="ar">▼</span></button><div class="sb"><div class="fld"><select id="bumi"><option value="">不限 Any</option><option value="N">Non-Bumi</option><option value="B">Bumi</option></select></div></div></div>
   <div class="sec" data-k="gr"><button type="button" class="sh">来源群 Group<span class="sv"></span><span class="ar">▼</span></button><div class="sb"><div class="chips" id="groups"></div></div></div>
 
   <div class="acts"><button type="button" id="reset">重设 Reset</button><button type="button" class="pri" id="go">看结果 Show results</button></div>
@@ -266,7 +266,7 @@ function card(r,idx){
   if(r[3])typ.push(r[3]+" 层 storey");if(r[4])typ.push(/^L/.test(r[4])?"Level "+r[4].slice(1):r[4]+" floor");if(r[5])typ.push(r[5]);
   if(r[11])typ.push({F:"全家私 Fully furnished",P:"半家私 Partly furnished",B:"空屋 Bare"}[r[11]]);
   if(r[12])typ.push(r[12]==="FH"?"Freehold 永久":"Leasehold 租赁");
-  if(r[13])typ.push({N:"Non-Bumi / Intl",B:"Bumi lot 土著",M:"Bumi lot 土著"}[r[13]]);
+  if(r[13])typ.push({N:"Non-Bumi",B:"Bumi",M:"Bumi"}[r[13]]);
   var pr=[];if(r[14]&&CURSR!=="R")pr.push(fmtP(r[14])+(r[16]?" (RM"+r[16]+" psf)":""));if(r[15]&&CURSR!=="S")pr.push("租 RM"+r[15].toLocaleString()+"/月");
   var kind={S:"出售 Sale",R:"出租 Rent",B:"租/卖 Rent & Sale"}[r[1]],ag=D.agents[r[19]];
   var srClass=r[1]==="R"?"rent":"sale";
