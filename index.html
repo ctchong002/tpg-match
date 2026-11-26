@@ -117,6 +117,7 @@
           <label>Kind<div class="seg" id="r-kind"><button type="button" data-v="WTR" class="on">WTR · To Rent</button><button type="button" data-v="WTB">WTB · To Buy</button></div></label>
           <label>Category<div class="seg" id="r-cat"><button type="button" data-v="industry" class="on">🏭 Industry / Commercial</button><button type="button" data-v="residential">🏠 Residential</button></div></label>
           <div class="full"><label style="margin-bottom:0">Property Type <small class="muted">(multi-select, required)</small></label><div class="chips" id="r-types"></div></div>
+          <label class="full">Title <small class="muted">(optional)</small><input id="r-title" placeholder="e.g. Client A: Senai factory"></label>
           <div class="full"><label style="margin-bottom:0">Areas <small class="muted">(multi-select, required)</small><input id="r-area-q" placeholder="Search an area, e.g. Senai" autocomplete="off"></label>
             <div class="chips" id="r-areas-sel"></div><div class="area-sug" id="r-area-sug"></div></div>
           <label class="full" id="l-price"><span>Monthly Rent (RM)</span><span class="pair"><input id="r-pmin" type="number" inputmode="numeric" min="0" placeholder="Min"><i>–</i><input id="r-pmax" type="number" inputmode="numeric" min="0" placeholder="Max"></span></label>
@@ -135,7 +136,6 @@
             <div class="full" id="r-fur-wrap"><label style="margin-bottom:0">Furnishing</label><div class="chips" id="r-fur"></div></div>
             <div class="full"><label style="margin-bottom:0">Bumi / Non Bumi</label><div class="chips" id="r-lot"></div></div>
           </div></fieldset>
-          <label class="full">Title <small class="muted">(optional)</small><input id="r-title" placeholder="e.g. Client A: Senai factory"></label>
           <label class="full">Client Note <small class="muted">(visible only to you; not used for matching)</small><textarea id="r-note" rows="2"></textarea></label>
           <div class="full"><button class="btn" type="submit" id="req-save">Save</button> <button class="btn grey" type="button" id="req-cancel" hidden>Cancel</button> <span id="req-msg" class="msg"></span></div>
         </form>
