@@ -115,3 +115,33 @@ input:read-only,input:disabled,select:disabled{opacity:.75;cursor:not-allowed}
 #inbox-panel #inbox .inbox-more{display:block;margin:0 0 4px;padding:0;font-size:13px;min-height:32px}
 #inbox-panel #inbox small.muted{display:block}
 #f-ann textarea{min-height:140px;resize:vertical}
+
+
+/* Meeting Hub follows the portal's shared card and form styles. */
+#meeting-tabs { margin-bottom: 12px; }
+#meeting-editor { margin: 12px 0; }
+#meeting-editor summary { cursor: pointer; padding: 8px 0; }
+#meeting-form, #meeting-filters, .meeting-fields { display: grid; gap: 10px; margin: 12px 0; }
+#meeting-form .btn, .meeting-fields .btn { justify-self: start; }
+#meeting-form label, #meeting-filters label, .meeting-fields label { display: grid; gap: 4px; }
+.meeting-entry h3 { margin: 0; }
+.meeting-copy { white-space: pre-wrap; overflow-wrap: anywhere; }
+.meeting-poster { display: block; max-width: 100%; height: auto; }
+.meeting-awards-grid { display: grid; gap: 14px; grid-template-columns: repeat(3, minmax(0, 1fr)); }
+#pane-meeting .wrap:has(.meeting-awards-grid) { max-width: 1150px; }
+.meeting-awards-grid .meeting-entry { min-width: 0; }
+.meeting-poster-trigger { display: block; width: 100%; padding: 0; background: none; border: 0; cursor: zoom-in; }
+#meeting-poster-dialog { width: min(1100px, calc(100vw - 24px)); max-height: calc(100dvh - 24px); background: #161311; color: var(--ink); border: 1px solid var(--gold); border-radius: 14px; }
+#meeting-poster-dialog::backdrop { background: rgba(0, 0, 0, .85); }
+@media (max-width: 760px) { .meeting-awards-grid { grid-template-columns: 1fr; } }
+
+.attendance-metrics { display:grid; grid-template-columns:repeat(5,minmax(0,1fr)); gap:10px; }
+.attendance-metrics dt { color:var(--ink); font-size:.88rem; }
+.attendance-metrics dd { margin:6px 0 0; font-size:1.5rem; font-weight:700; color:var(--gold); }
+.attendance-history { list-style:none; padding:0; display:grid; gap:8px; }
+.attendance-host, .attendance-prompt { margin:14px 0; }
+.attendance-host h3, .attendance-prompt h3 { margin:0 0 10px; }
+.attendance-host summary { cursor:pointer; margin:10px 0; }
+.attendance-host-form { display:grid; gap:10px; justify-items:start; }
+.attendance-qr { display:block; width:min(100%,350px); height:auto; margin:12px 0; image-rendering:pixelated; }
+@media (max-width:650px) { .attendance-metrics { grid-template-columns:repeat(2,minmax(0,1fr)); } }

@@ -1,19 +1,10 @@
 <!doctype html>
-<html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="robots" content="noindex"><title>TPG · Meeting Hub Preview</title>
-<style>
-:root{color-scheme:dark;--gold:#e5bc72;--text:#f3ece1;--muted:#c6b8a4;--line:#463827}*{box-sizing:border-box}body{margin:0;background:#14110e;color:var(--text);font:16px/1.5 system-ui,sans-serif}main{max-width:1040px;margin:auto;padding:24px clamp(16px,4vw,48px) 60px}header{display:flex;justify-content:space-between;align-items:center;gap:12px;padding-bottom:19px;border-bottom:1px solid var(--line);color:var(--gold)}a{color:var(--gold)}h1{font:600 clamp(42px,8vw,70px)/1.04 Georgia,serif;margin:30px 0 12px;color:var(--gold)}h2,h3,p{margin:0 0 12px}.muted{color:var(--muted)}nav{display:flex;gap:8px;flex-wrap:wrap;margin:20px 0}button{font:inherit;background:#282018;color:var(--text);border:1px solid var(--line);border-radius:9px;padding:8px 13px;cursor:pointer}button.active,button.primary{background:var(--gold);color:#19130c;border-color:var(--gold);font-weight:700}button:disabled{opacity:.65;cursor:default}.panel,.card{background:#211a14;border:1px solid var(--line);border-radius:13px;padding:16px}.panel{margin:12px 0}.grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:9px;margin:12px 0}.grid dt{font-size:.82rem;color:var(--muted)}.grid dd{margin:5px 0 0;font-size:1.6rem;font-weight:700;color:var(--gold)}ul{padding-left:21px}li{margin:7px 0}@media(max-width:700px){.grid{grid-template-columns:repeat(2,minmax(0,1fr))}}[hidden]{display:none!important}
-.portal-frame header{display:none}.portal-frame main{padding-top:4px}.portal-frame h1{font-size:clamp(32px,6vw,50px)}
-</style>
-<main><header><strong>THE PILLARS GROUP</strong><a href="./">Back to TPG AI</a></header>
-<h1>Meeting Hub</h1><p class="muted">Preview · Attendance figures are examples.</p>
-<nav aria-label="Meeting Hub sections"><button data-tab="check" class="active" aria-pressed="true">Check-in</button><button data-tab="stock" aria-pressed="false">AAA Stock</button><button data-tab="minutes" aria-pressed="false">Meeting Minutes</button><button data-tab="awards" aria-pressed="false">Team Awards</button></nav>
-<section id="check"><div class="panel"><h2>Weekly Team Meeting</h2><p>Scan the QR code displayed by the meeting host to check in.</p><p class="muted">Live QR check-in is awaiting activation.</p></div>
-<h2>My attendance</h2><dl class="grid"><div class="card"><dt>Team meetings</dt><dd>10</dd></div><div class="card"><dt>My expected meetings</dt><dd>8</dd></div><div class="card"><dt>Attended</dt><dd>6</dd></div><div class="card"><dt>Absent</dt><dd>2</dd></div><div class="card"><dt>Attendance rate</dt><dd>75%</dd></div></dl><p class="muted">The current meeting counts after check-in closes.</p><h3>Recent meetings</h3><ul><li>Last meeting · Attended</li><li>Previous meeting · Absent</li></ul></section>
-<section id="stock" class="panel" hidden><h2>AAA Stock</h2><p class="muted">Sample listing</p><h3>Senai · Detached factory</h3><p>Meeting recommendation and availability status.</p></section>
-<section id="minutes" class="panel" hidden><h2>Meeting Minutes</h2><h3>Weekly Team Meeting</h3><p>Sample topics · AAA Stock review, project updates and follow-ups.</p></section>
-<section id="awards" class="panel" hidden><h2>Team Awards</h2><ul><li>Top Sales · Top 5</li><li>Top Rookies · Top 5</li><li>Project Performance</li></ul><p class="muted">Actual posters will appear in the signed-in Meeting Hub.</p></section></main>
-<script>
-if(window.parent!==window)document.documentElement.classList.add("portal-frame");
-const tabs=[...document.querySelectorAll('[data-tab]')];
-tabs.forEach(tab=>tab.addEventListener('click',()=>tabs.forEach(item=>{const on=item===tab;item.classList.toggle('active',on);item.setAttribute('aria-pressed',on);document.getElementById(item.dataset.tab).hidden=!on})));
-</script></html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="refresh" content="0; url=./#meeting">
+<title>Meeting Hub</title>
+</head>
+<body><a href="./#meeting">Open Meeting Hub</a></body>
+</html>

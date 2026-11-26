@@ -59,7 +59,9 @@
     if (TPG.data[cat]) return TPG.data[cat];
     var p = syncCategory(cat, progress).then(function (d) {
       var rows = Object.keys(d.rows).map(function (k) { return d.rows[k]; }).sort(function (a, b) { return a.id - b.id; });
-      return cat === "industry" ? { FDATA: TPGCompile.compileIndustry(d.lookups, rows) } : TPGCompile.compileResidential(d.lookups, rows);
+      var result = cat === "industry" ? { FDATA: TPGCompile.compileIndustry(d.lookups, rows) } : TPGCompile.compileResidential(d.lookups, rows);
+      result.listingIds = rows.map(function (row) { return String(row.id); });
+      return result;
     });
     p.catch(function () { delete TPG.data[cat]; });
     return (TPG.data[cat] = p);

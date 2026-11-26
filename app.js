@@ -12,6 +12,10 @@
 
   // ---------- login ----------
   var email = "";
+  var pendingCheckin = new URLSearchParams(location.hash.split("?")[1]).get("checkin");
+  if (/^#meeting[?]/.test(location.hash) && /^[\da-f-]{36}$/i.test(pendingCheckin || "")) {
+    sessionStorage.setItem("tpg-checkin", pendingCheckin);
+  }
   $("f-email").addEventListener("submit", function (ev) {
     ev.preventDefault(); email = $("email").value.trim().toLowerCase(); msg("login-msg", "Sending…", true);
     sb.auth.signInWithOtp({ email: email, options: { shouldCreateUser: true, emailRedirectTo: location.origin + location.pathname } }).then(function (r) {
@@ -44,26 +48,43 @@
         var opt = document.createElement("option"); opt.value = "editor"; opt.textContent = "Editor"; $("a-role").appendChild(opt);
       }
       show("app");
-      openTab((location.hash || "#industry").slice(1));
+      var route = (location.hash || "#industry").slice(1).split("?");
+      var params = new URLSearchParams(route[1]);
+      var checkinToken = sessionStorage.getItem("tpg-checkin");
+      sessionStorage.removeItem("tpg-checkin");
+      if (checkinToken) openTab("meeting", null, checkinToken);
+      else openTab(route[0], params.get("listing"), params.get("checkin"));
       refreshInboxBadge();
       sb.from("profiles").update({ last_seen_at: new Date().toISOString() }).eq("email", a.email).then(function () {});
     }).catch(function (e) { $("blocked-msg").textContent = errText(e); show("blocked"); });
   }
 
   // ---------- tabs ----------
-  function openTab(t) {
-    if (["industry", "residential", "matches", "announcements", "agents"].indexOf(t) < 0
+  function openTab(t, listingId, checkinToken) {
+    if (["industry", "residential", "matches", "meeting", "announcements", "agents"].indexOf(t) < 0
         || (t === "agents" && $("tab-agents").hidden)
         || (t === "announcements" && $("tab-announce").hidden)) t = "industry";
     [].forEach.call($("tabs").children, function (b) { b.classList.toggle("on", b.dataset.tab === t); });
-    ["industry", "residential"].forEach(function (c) { var f = $("fr-" + c); f.hidden = c !== t; if (c === t && !f.src) f.src = c + "/"; });
+    listingId = /^(industry|residential)$/.test(t) && /^\d+$/.test(listingId || "") ? listingId : null;
+    ["industry", "residential"].forEach(function (c) {
+      var frame = $("fr-" + c);
+      frame.hidden = c !== t;
+      if (c === t) {
+        var source = c + "/" + (listingId ? "?listing=" + listingId : "");
+        if (frame.getAttribute("src") !== source) frame.src = source;
+      }
+    });
+    $("pane-meeting").hidden = t !== "meeting";
+    if (t === "meeting") TPG.loadMeetingHub(checkinToken);
+    else TPG.clearMeetingHub();
     $("pane-matches").hidden = t !== "matches"; $("pane-agents").hidden = t !== "agents";
     $("pane-announcements").hidden = t !== "announcements";
     if (t === "matches") loadMatches();
     if (t === "agents") loadAgents();
     if (t === "announcements" && TPG.loadAnnouncements) TPG.loadAnnouncements();
-    history.replaceState(null, "", "#" + t);
+    history.replaceState(null, "", "#" + t + (listingId ? "?listing=" + listingId : ""));
   }
+  TPG.openMeetingListing = openTab;
   $("tabs").addEventListener("click", function (e) { var b = e.target.closest("button[data-tab]"); if (b) openTab(b.dataset.tab); });
 
   // ---------- My Matches (matches.js) ----------

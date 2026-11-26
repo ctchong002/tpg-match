@@ -19,7 +19,7 @@
 <meta name="twitter:title" content="TPG Pillar's AI">
 <meta name="twitter:image" content="https://ai.thepillarsgroup.com/assets/og-image.jpg">
 <link rel="stylesheet" href="assets/fonts.css">
-<link rel="stylesheet" href="portal.css">
+<link rel="stylesheet" href="portal.css?v=meeting-20261126">
 <link rel="stylesheet" href="matches.css">
 </head>
 <body>
@@ -79,7 +79,7 @@
       <button data-tab="industry" class="on">Industry</button>
       <button data-tab="residential">Residential</button>
       <button data-tab="matches">My Matches</button>
-      <button type="button" id="tab-meeting-preview" aria-pressed="false">Meeting Hub (Preview)</button>
+      <button data-tab="meeting">Meeting Hub</button>
       <button data-tab="announcements" id="tab-announce" hidden>Announcements</button>
       <button data-tab="agents" id="tab-agents" hidden>Agents</button>
     </div>
@@ -105,7 +105,6 @@
   </div>
   <iframe id="fr-industry" class="pane" title="Industry"></iframe>
   <iframe id="fr-residential" class="pane" title="Residential" hidden></iframe>
-  <iframe id="fr-meeting-preview" class="pane" title="Meeting Hub" hidden></iframe>
 
   <div id="pane-matches" class="pane scroll" hidden>
     <div class="wrap">
@@ -149,6 +148,31 @@
     </div>
   </div>
 
+  <section id="pane-meeting" class="pane scroll" hidden>
+    <div class="wrap">
+      <h2>Meeting Hub</h2>
+      <div class="tabs-top" id="meeting-tabs" aria-label="Meeting Hub sections">
+        <button type="button" data-section="stock" class="on">AAA Stock</button>
+        <button type="button" data-section="minutes">Meeting Minutes</button>
+        <button type="button" data-section="awards">Team Awards</button>
+        <button type="button" data-section="checkin">Check-in</button>
+      </div>
+      <p class="msg" id="meeting-message" role="status"></p>
+      <div id="meeting-filters"></div>
+      <details id="meeting-editor" hidden>
+        <summary>Publish an entry</summary>
+        <form id="meeting-form"></form>
+      </details>
+      <div class="list" id="meeting-results"></div>
+      <section id="meeting-checkin" aria-label="Meeting check-in" hidden></section>
+      <dialog id="meeting-poster-dialog" aria-labelledby="meeting-poster-title">
+        <form method="dialog"><button class="btn sm" autofocus>Close poster</button></form>
+        <h3 id="meeting-poster-title"></h3>
+        <img class="meeting-poster" alt="">
+      </dialog>
+    </div>
+  </section>
+
   <div id="pane-announcements" class="pane scroll" hidden>
     <div class="wrap">
       <h2>📢 Announcements</h2>
@@ -190,30 +214,12 @@
 <script src="vendor/supabase.js"></script>
 <script src="config.js"></script>
 <script src="compile.js"></script>
-<script src="portal.js"></script>
+<script src="portal.js?v=meeting-20261126"></script>
 <script src="matches.js"></script>
 <script src="announcements.js"></script>
-<script src="app.js"></script>
-<script>
-(function () {
-  var tabs = document.getElementById('tabs');
-  var button = document.getElementById('tab-meeting-preview');
-  var frame = document.getElementById('fr-meeting-preview');
-  button.addEventListener('click', function () {
-    if (!frame.hidden) return;
-    document.querySelectorAll('#app > .pane').forEach(function (pane) { pane.hidden = pane !== frame; });
-    tabs.querySelectorAll('button.on').forEach(function (tab) { tab.classList.remove('on'); });
-    button.classList.add('on');
-    button.setAttribute('aria-pressed', 'true');
-    if (!frame.hasAttribute('src')) frame.src = 'meeting-preview.html';
-  });
-  tabs.addEventListener('click', function (event) {
-    if (!event.target.closest('button[data-tab]')) return;
-    frame.hidden = true;
-    button.classList.remove('on');
-    button.setAttribute('aria-pressed', 'false');
-  });
-})();
-</script>
+<script src="meeting-qr.js?v=meeting-20261126"></script>
+<script src="checkin.js?v=meeting-20261126"></script>
+<script src="meeting.js?v=meeting-20261126"></script>
+<script src="app.js?v=meeting-20261126"></script>
 </body>
 </html>
