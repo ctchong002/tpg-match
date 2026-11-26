@@ -2,6 +2,8 @@
   var TPG = window.TPG;
   var panel = document.getElementById("meeting-checkin");
   var token = null, version = 0, refreshTimer, notice = "";
+  var activeScanner = null, decoderPromise;
+  var tokenPattern = /^[0-9a-f]{8}(?:-[0-9a-f]{4}){3}-[0-9a-f]{12}$/i;
   var dateTime = new Intl.DateTimeFormat("en-MY", {
     dateStyle: "medium", timeStyle: "short", timeZone: "Asia/Kuala_Lumpur"
   });
@@ -59,7 +61,7 @@
       card.append(element("dt", metric[0]), element("dd", metric[1]));
       grid.appendChild(card);
     });
-    panel.append(element("p", "To check in, scan the QR code displayed by your meeting host.", "muted"), heading, grid, element("p",
+    panel.append(heading, grid, element("p",
       "Only closed meetings where you were on the active roster count in your attendance rate.", "muted"));
 
     panel.appendChild(element("h3", "Recent meetings"));
@@ -84,6 +86,143 @@
     url.hash = "meeting?checkin=" + encodeURIComponent(value);
     return url.href;
   }
+
+  function loadDecoder() {
+    if (!decoderPromise) {
+      decoderPromise = new Promise(function (resolve, reject) {
+        var script = document.createElement("script");
+        script.src = "./meeting-qr-reader.js?v=1.4.0";
+        script.onload = function () {
+          if (typeof window.jsQR === "function") resolve(window.jsQR);
+          else reject(new Error("QR decoder unavailable"));
+        };
+        script.onerror = function () { reject(new Error("QR decoder unavailable")); };
+        document.head.appendChild(script);
+      }).catch(function (error) {
+        decoderPromise = null;
+        throw error;
+      });
+    }
+    return decoderPromise;
+  }
+
+  function stopScanner() {
+    if (!activeScanner) return;
+    var scanner = activeScanner;
+    activeScanner = null;
+    cancelAnimationFrame(scanner.frame);
+    scanner.feedback.textContent = "";
+    if (scanner.stream) scanner.stream.getTracks().forEach(function (track) { track.stop(); });
+    scanner.video.srcObject = null;
+    scanner.camera.remove();
+    scanner.button.disabled = false;
+  }
+
+  function readCheckinToken(raw) {
+    try {
+      var url = new URL(raw);
+      var home = new URL("./", location.href);
+      if (url.origin !== home.origin || url.username || url.password ||
+          (url.pathname !== home.pathname && url.pathname !== home.pathname + "index.html") ||
+          !url.hash.startsWith("#meeting?")) return null;
+      var value = new URLSearchParams(url.hash.slice("#meeting?".length)).get("checkin");
+      return tokenPattern.test(value || "") ? value : null;
+    } catch (_) {
+      return null;
+    }
+  }
+
+  async function openScanner(button, container, feedback) {
+    if (activeScanner) return;
+    if (!navigator.mediaDevices?.getUserMedia) {
+      feedback.textContent = "Camera access is unavailable here. Use your phone’s Camera app to scan the meeting QR.";
+      return;
+    }
+
+    var camera = element("div", null, "checkin-camera");
+    var video = element("video");
+    video.autoplay = video.muted = video.playsInline = true;
+    video.setAttribute("aria-label", "QR scanner camera preview");
+    var cancel = action("Close camera", function () {
+      stopScanner();
+      button.focus();
+    });
+    camera.append(video, cancel);
+    container.appendChild(camera);
+    button.disabled = true;
+    cancel.focus();
+    feedback.textContent = "Opening camera…";
+    var scanner = { button: button, camera: camera, video: video, feedback: feedback, stream: null, frame: 0 };
+    activeScanner = scanner;
+
+    try {
+      var stream = await navigator.mediaDevices.getUserMedia({
+        audio: false, video: { facingMode: { ideal: "environment" } }
+      });
+      if (activeScanner !== scanner) {
+        stream.getTracks().forEach(function (track) { track.stop(); });
+        return;
+      }
+      scanner.stream = stream;
+      video.srcObject = stream;
+      var ready = await Promise.all([loadDecoder(), video.play()]);
+      if (activeScanner !== scanner) return;
+
+      var decode = ready[0];
+      var canvas = document.createElement("canvas");
+      var context = canvas.getContext("2d", { willReadFrequently: true });
+      var previous = -150;
+      feedback.textContent = "Point your camera at the meeting QR.";
+      function scanFrame(now) {
+        if (activeScanner !== scanner) return;
+        if (video.readyState >= 2 && video.videoWidth && now - previous >= 150) {
+          previous = now;
+          var scale = Math.min(1, 640 / Math.max(video.videoWidth, video.videoHeight));
+          var width = Math.round(video.videoWidth * scale);
+          var height = Math.round(video.videoHeight * scale);
+          if (canvas.width !== width) canvas.width = width;
+          if (canvas.height !== height) canvas.height = height;
+          context.drawImage(video, 0, 0, width, height);
+          var pixels = context.getImageData(0, 0, width, height);
+          var code = decode(pixels.data, width, height, { inversionAttempts: "dontInvert" });
+          if (code) {
+            var scannedToken = readCheckinToken(code.data);
+            if (scannedToken) {
+              stopScanner();
+              token = scannedToken;
+              load();
+              return;
+            }
+            feedback.textContent = "Use the TPG meeting QR shown by your host.";
+          }
+        }
+        scanner.frame = requestAnimationFrame(scanFrame);
+      }
+      scanner.frame = requestAnimationFrame(scanFrame);
+    } catch (error) {
+      if (activeScanner !== scanner) return;
+      stopScanner();
+      feedback.textContent = error.name === "NotAllowedError"
+        ? "Camera access was blocked. Allow the camera in your browser settings or scan with your phone’s Camera app."
+        : "Could not start the QR scanner. Use your phone’s Camera app to scan the meeting QR.";
+      button.focus();
+    }
+  }
+
+  function showScanner() {
+    var container = element("div", null, "item checkin-scan");
+    var feedback = element("p", "", "msg");
+    feedback.setAttribute("role", "status");
+    var button = action("Scan QR", function () { openScanner(button, container, feedback); });
+    container.append(button, element("p", "Scan the QR displayed by your meeting host.", "muted"), feedback);
+    panel.appendChild(container);
+    return button;
+  }
+
+  document.addEventListener("visibilitychange", function () {
+    if (document.hidden && activeScanner) stopScanner();
+  });
+  window.addEventListener("pagehide", stopScanner);
 
   function makeQR(link) {
     var qr = new window.TPGMeetingQR(-1, 0); // QR error correction level M.
@@ -188,12 +327,16 @@
   async function load() {
     var current = ++version;
     clearTimeout(refreshTimer);
+    stopScanner();
     panel.replaceChildren();
     var feedback = element("p", notice, "msg");
     feedback.setAttribute("role", "status");
     panel.appendChild(feedback);
+    var scanButton = showScanner();
+    scanButton.disabled = Boolean(token);
     await submitScannedCode(current, feedback);
     if (current !== version) return;
+    if (!activeScanner) scanButton.disabled = false;
     try {
       var response = await TPG.sb.rpc("my_meeting_attendance");
       if (current !== version) return;
@@ -216,11 +359,12 @@
   TPG.checkin = {
     load: load,
     useToken: function (value) {
-      token = /^[0-9a-f]{8}(?:-[0-9a-f]{4}){3}-[0-9a-f]{12}$/i.test(value) ? value : null;
+      token = tokenPattern.test(value || "") ? value : null;
     },
     clear: function () {
       ++version;
       clearTimeout(refreshTimer);
+      stopScanner();
       token = null;
       notice = "";
       panel.replaceChildren();
