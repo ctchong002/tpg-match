@@ -79,7 +79,7 @@
       <button data-tab="industry" class="on">Industry</button>
       <button data-tab="residential">Residential</button>
       <button data-tab="matches">My Matches</button>
-      <a href="meeting-preview.html" style="display:inline-flex;align-items:center;white-space:nowrap;min-height:40px;padding:8px 12px;border-radius:10px;background:rgba(255,255,255,.08);color:#E8DCC8;font-weight:650;font-size:.875rem;text-decoration:none">Meeting Hub (Preview)</a>
+      <button type="button" id="tab-meeting-preview" aria-pressed="false">Meeting Hub (Preview)</button>
       <button data-tab="announcements" id="tab-announce" hidden>Announcements</button>
       <button data-tab="agents" id="tab-agents" hidden>Agents</button>
     </div>
@@ -105,6 +105,7 @@
   </div>
   <iframe id="fr-industry" class="pane" title="Industry"></iframe>
   <iframe id="fr-residential" class="pane" title="Residential" hidden></iframe>
+  <iframe id="fr-meeting-preview" class="pane" title="Meeting Hub" hidden></iframe>
 
   <div id="pane-matches" class="pane scroll" hidden>
     <div class="wrap">
@@ -193,5 +194,26 @@
 <script src="matches.js"></script>
 <script src="announcements.js"></script>
 <script src="app.js"></script>
+<script>
+(function () {
+  var tabs = document.getElementById('tabs');
+  var button = document.getElementById('tab-meeting-preview');
+  var frame = document.getElementById('fr-meeting-preview');
+  button.addEventListener('click', function () {
+    if (!frame.hidden) return;
+    document.querySelectorAll('#app > .pane').forEach(function (pane) { pane.hidden = pane !== frame; });
+    tabs.querySelectorAll('button.on').forEach(function (tab) { tab.classList.remove('on'); });
+    button.classList.add('on');
+    button.setAttribute('aria-pressed', 'true');
+    if (!frame.hasAttribute('src')) frame.src = 'meeting-preview.html';
+  });
+  tabs.addEventListener('click', function (event) {
+    if (!event.target.closest('button[data-tab]')) return;
+    frame.hidden = true;
+    button.classList.remove('on');
+    button.setAttribute('aria-pressed', 'false');
+  });
+})();
+</script>
 </body>
 </html>
