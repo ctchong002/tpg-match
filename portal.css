@@ -106,6 +106,11 @@ input:focus,select:focus,textarea:focus{outline:2px solid var(--gold);outline-of
 .ann-preview-lab{font-size:12px;margin:4px 0}
 .ann-preview{background:var(--input);border:1px solid var(--line);border-radius:10px;padding:14px 16px;min-height:88px}
 .ann-preview h3{margin:0 0 8px;font-size:16px;color:var(--gold);font-weight:650}
-.ann-preview .ann-body{margin:0;white-space:pre-wrap;word-break:break-word;color:var(--ink);font-size:14px;line-height:1.5}
-#ann-list .ann-body{white-space:pre-wrap;word-break:break-word;margin:8px 0;color:var(--ink);font-size:14px}
+.ann-body{white-space:pre-wrap;word-break:break-word;margin:8px 0;color:var(--ink);font-size:14px;line-height:1.5}
+.ann-preview .ann-body{margin:0}
+#ann-list .ann-body{margin:8px 0}
+#inbox-panel #inbox .ann-body{margin:8px 0 4px}
+#inbox-panel #inbox .ann-body.is-clamp{max-height:18em;overflow:hidden}
+#inbox-panel #inbox .inbox-more{display:block;margin:0 0 4px;padding:0;font-size:13px;min-height:32px}
+#inbox-panel #inbox small.muted{display:block}
 #f-ann textarea{min-height:140px;resize:vertical}

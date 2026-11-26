@@ -120,9 +120,22 @@
       return "<div class='item" + (n.read_at ? "" : " unread") + "'><div class='t'>" +
         (kind ? "<span class='tag kind'>" + esc(kind) + "</span>" : "") +
         esc(n.title || "") + "</div>" +
-        (n.body ? "<div class='muted'>" + esc(n.body) + "</div>" : "") +
+        (n.body ? "<div class='ann-body'>" + esc(n.body) + "</div>" : "") +
         "<small class='muted'>" + esc(whenTxt(n.created_at)) + "</small></div>";
     }).join("");
+    [].forEach.call(el.querySelectorAll(".item"), function (item) {
+      var body = item.querySelector(".ann-body");
+      if (!body) return;
+      var lh = parseFloat(window.getComputedStyle(body).lineHeight) || 21;
+      if (body.scrollHeight <= lh * 12 + 4) return;
+      body.classList.add("is-clamp");
+      var btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = "link inbox-more";
+      btn.setAttribute("data-expand", "");
+      btn.textContent = "Show more";
+      body.insertAdjacentElement("afterend", btn);
+    });
   }
   function refreshInboxBadge() {
     return sb.rpc("my_inbox_unread").then(function (r) {
@@ -170,6 +183,16 @@
     loadInboxPanel();
     $("inbox-close").focus();
   }
+  $("inbox").addEventListener("click", function (e) {
+    var item = e.target.closest(".item"); if (!item) return;
+    var body = item.querySelector(".ann-body");
+    var btn = item.querySelector("[data-expand]");
+    if (!body || !btn) return;
+    if (!(e.target === btn || e.target === body || body.contains(e.target))) return;
+    var open = body.classList.contains("is-clamp");
+    body.classList.toggle("is-clamp", !open);
+    btn.textContent = open ? "Show less" : "Show more";
+  });
   $("inbox-btn").addEventListener("click", function (e) { e.stopPropagation(); if (inboxOpen) closeInbox(); else openInbox(); });
   $("inbox-close").addEventListener("click", closeInbox);
   $("inbox-backdrop").addEventListener("click", closeInbox);
