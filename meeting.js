@@ -120,7 +120,7 @@
         }
       } else if (row.kind === "minutes") {
         (row.stocks || []).forEach(function (stock) {
-          card.appendChild(button("AAA Stock · " + stock.title, function () { openListing(stock); }));
+          card.appendChild(button("Solid Good Deal · " + stock.title, function () { openListing(stock); }));
         });
       } else {
         var loadNote = el("p", "Loading poster…", "muted");
