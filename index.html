@@ -171,11 +171,13 @@
     <div class="wrap">
       <h2>👥 Authorised Agents</h2>
       <form id="f-agent" class="grid card">
-        <label>Email<input id="a-email" type="email" required></label>
-        <label>Name<input id="a-name"></label>
-        <label>Phone<input id="a-phone"></label>
-        <label>Role<select id="a-role"><option value="agent">Agent</option><option value="admin">Admin</option></select></label>
-        <div class="full"><button class="btn" type="submit">Add</button> <span id="agent-msg" class="msg"></span></div>
+        <label>Email<input id="a-email" type="email" required autocomplete="off"></label>
+        <label>Full Name<input id="a-name" autocomplete="off"></label>
+        <label>Phone<input id="a-phone" inputmode="tel" autocomplete="off"></label>
+        <label id="a-role-wrap">Role<select id="a-role"><option value="agent">Agent</option><option value="admin">Admin</option></select></label>
+        <label class="full">Note <small class="muted">(optional)</small><textarea id="a-note" rows="2"></textarea></label>
+        <p class="hint full" id="a-email-hint" hidden>The login email cannot be changed. To use a new email, set this account Inactive and add a new one.</p>
+        <div class="full"><button class="btn" type="submit" id="a-save">Add</button> <button class="btn grey" type="button" id="a-cancel" hidden>Cancel</button> <span id="agent-msg" class="msg"></span></div>
       </form>
       <input id="a-filter" placeholder="Search email / name" class="full-input">
       <div id="agents" class="list"></div>

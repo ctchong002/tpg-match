@@ -30,11 +30,13 @@
   $("out").addEventListener("click", TPG.signOut); $("out2").addEventListener("click", TPG.signOut);
 
   // ---------- after login ----------
-  var started = false;
+  var started = false, myRole = "";
   function enter() {
     TPG.checkAccess().then(function (a) {
       if (!a || a.status !== "active") { TPG.clearCache(); show("blocked"); return; }
       if (started) return; started = true;
+      myRole = a.role;
+      $("a-role").disabled = myRole !== "owner";
       $("who").textContent = (a.full_name || a.email) + " · " + a.role;
       $("tab-agents").hidden = !(a.role === "owner" || a.role === "admin");
       $("tab-announce").hidden = !(a.role === "owner" || a.role === "admin" || a.role === "editor");
@@ -68,32 +70,84 @@
   function loadMatches() { if (TPG.loadMatches) TPG.loadMatches(); }
 
   // ---------- Agents (owner/admin) ----------
-  var agents = [];
+  var agents = [], editingAgent = null;
+  function resetAgentForm() {
+    editingAgent = null;
+    $("f-agent").reset();
+    $("a-email").readOnly = false;
+    var own = $("a-role").querySelector("option[value='owner']"); if (own) own.remove();
+    $("a-role").disabled = myRole !== "owner";
+    if (myRole !== "owner") $("a-role").value = "agent";
+    $("a-save").textContent = "Add";
+    $("a-cancel").hidden = true;
+    $("a-email-hint").hidden = true;
+    msg("agent-msg", "");
+  }
   function renderAgents() {
     var f = $("a-filter").value.trim().toLowerCase();
     $("agents").innerHTML = agents.filter(function (a) { return !f || (a.email + " " + (a.full_name || "")).toLowerCase().indexOf(f) >= 0; }).map(function (a) {
       var on = a.status === "active";
+      var acts = "<button class='btn sm grey' data-edit='" + esc(a.email) + "'>Edit</button>";
+      if (a.role !== "owner" && (myRole === "owner" || a.role === "agent")) {
+        acts += "<button class='btn sm " + (on ? "grey" : "") + "' data-toggle='" + esc(a.email) + "' data-to='" + (on ? "inactive" : "active") + "'>" + (on ? "Set Inactive" : "Restore Active") + "</button>";
+      }
       return "<div class='item'><div class='t'>" + esc(a.full_name || "-") + " <span class='tag'>" + a.role + "</span><span class='tag " + (on ? "" : "off") + "'>" + (on ? "active" : "inactive") + "</span></div>" +
         "<div class='muted'>" + esc(a.email) + (a.phone ? " · " + esc(a.phone) : "") + "</div>" +
-        (a.role === "owner" ? "" : "<div style='margin-top:6px'><button class='btn sm " + (on ? "grey" : "") + "' data-toggle='" + esc(a.email) + "' data-to='" + (on ? "inactive" : "active") + "'>" + (on ? "Set Inactive" : "Restore Active") + "</button></div>") + "</div>";
+        "<div class='acts' style='margin-top:6px'>" + acts + "</div></div>";
     }).join("") || "<p class='muted'>No agents yet.</p>";
   }
   function loadAgents() {
-    sb.from("allowlist").select("email,full_name,phone,role,status,created_at").order("created_at").then(function (r) {
+    sb.from("allowlist").select("email,full_name,phone,note,role,status,created_at").order("created_at").then(function (r) {
       if (r.error) return msg("agent-msg", errText(r.error)); agents = r.data; renderAgents();
     });
   }
   $("a-filter").addEventListener("input", renderAgents);
+  $("a-cancel").addEventListener("click", resetAgentForm);
   $("agents").addEventListener("click", function (e) {
+    var ed = e.target.closest("button[data-edit]");
+    if (ed) {
+      var a = agents.filter(function (x) { return x.email === ed.dataset.edit; })[0];
+      if (!a) return;
+      editingAgent = a;
+      $("a-email").value = a.email;
+      $("a-email").readOnly = true;
+      $("a-name").value = a.full_name || "";
+      $("a-phone").value = a.phone || "";
+      $("a-note").value = a.note || "";
+      var own = $("a-role").querySelector("option[value='owner']");
+      if (a.role === "owner") {
+        if (!own) { own = document.createElement("option"); own.value = "owner"; own.textContent = "Owner"; $("a-role").appendChild(own); }
+      } else if (own) own.remove();
+      $("a-role").value = a.role;
+      $("a-role").disabled = myRole !== "owner" || a.role === "owner";
+      $("a-save").textContent = "Save";
+      $("a-cancel").hidden = false;
+      $("a-email-hint").hidden = false;
+      msg("agent-msg", "");
+      $("f-agent").scrollIntoView({ behavior: "smooth", block: "start" });
+      return;
+    }
     var b = e.target.closest("button[data-toggle]"); if (!b) return;
     sb.from("allowlist").update({ status: b.dataset.to }).eq("email", b.dataset.toggle).then(function (r) { if (r.error) alert(errText(r.error)); loadAgents(); });
   });
   $("f-agent").addEventListener("submit", function (ev) {
     ev.preventDefault();
-    var row = { email: $("a-email").value.trim().toLowerCase(), full_name: $("a-name").value.trim() || null, phone: $("a-phone").value.trim() || null, role: $("a-role").value };
+    var name = $("a-name").value.trim() || null, phone = $("a-phone").value.trim() || null, note = $("a-note").value.trim() || null;
+    if (editingAgent) {
+      var patch = { full_name: name, phone: phone, note: note };
+      if (myRole === "owner" && editingAgent.role !== "owner" && !$("a-role").disabled) patch.role = $("a-role").value;
+      sb.from("allowlist").update(patch).eq("email", editingAgent.email).then(function (r) {
+        if (r.error) return msg("agent-msg", errText(r.error));
+        msg("agent-msg", "Updated ✓ " + editingAgent.email, true);
+        resetAgentForm();
+        loadAgents();
+      });
+      return;
+    }
+    var row = { email: $("a-email").value.trim().toLowerCase(), full_name: name, phone: phone, note: note, role: myRole === "owner" ? $("a-role").value : "agent" };
     sb.from("allowlist").insert(row).then(function (r) {
       if (r.error) return msg("agent-msg", /duplicate/i.test(r.error.message) ? "This email is already on the list." : errText(r.error));
-      msg("agent-msg", "Added ✓ " + row.email, true); $("f-agent").reset(); loadAgents();
+      msg("agent-msg", "Added ✓ " + row.email, true); resetAgentForm(); loadAgents();
     });
   });
 

@@ -21,6 +21,7 @@ label{display:block;font-size:13px;color:var(--muted);margin:8px 0}
 input,select,textarea{display:block;width:100%;margin-top:4px;padding:10px 12px;border:1px solid var(--line);border-radius:8px;font:inherit;background:var(--input);color:var(--ink)}
 input::placeholder,textarea::placeholder{color:#9A8F80}
 input:focus,select:focus,textarea:focus{outline:2px solid var(--gold);outline-offset:1px}
+input:read-only,input:disabled,select:disabled{opacity:.75;cursor:not-allowed}
 .btn{background:var(--gold);color:#111;border:0;border-radius:10px;padding:11px 16px;font:650 15px/1.2 var(--ui);cursor:pointer;margin-top:8px}
 .btn.sm{padding:6px 11px;font-size:13px;margin:0 4px 0 0;min-height:36px}
 .btn.grey{background:#3A342C;color:var(--ink)}
