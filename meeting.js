@@ -218,7 +218,7 @@
       var price = field("Price shared at the meeting", "meeting_price", "text");
       price.querySelector("input").maxLength = 100;
       form.append(category, search, button("Find listings", findListings), picker, price,
-        field("Link to Meeting Minutes", "meeting_id", "select", [["", "Select later / none"]].concat(minutes.map(function (m) {
+        field("Link to Weekly announcement", "meeting_id", "select", [["", "Select later / none"]].concat(minutes.map(function (m) {
           return [m.id, m.event_date + " · " + m.title];
         }))));
     } else if (section === "awards") {
@@ -239,7 +239,7 @@
     var row = { kind: section, title: value("title"), event_date: value("event_date"), body: "" };
     if (section !== "awards") {
       row.body = value("body");
-      if (!row.body) return message("Enter the meeting notes or recommendation.");
+      if (!row.body) return message("Enter the weekly announcement or recommendation.");
     }
     if (section === "stock") {
       row.meeting_id = value("meeting_id") || null;
