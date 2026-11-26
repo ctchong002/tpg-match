@@ -79,6 +79,7 @@
       <button data-tab="industry" class="on">Industry</button>
       <button data-tab="residential">Residential</button>
       <button data-tab="matches">My Matches</button>
+      <button data-tab="announcements" id="tab-announce" hidden>Announcements</button>
       <button data-tab="agents" id="tab-agents" hidden>Agents</button>
     </div>
     <div class="who">
@@ -146,6 +147,26 @@
     </div>
   </div>
 
+  <div id="pane-announcements" class="pane scroll" hidden>
+    <div class="wrap">
+      <h2>📢 Announcements</h2>
+      <p class="hint">A notice you send here appears in every agent’s Inbox. It is not emailed.</p>
+      <form id="f-ann" class="grid card" novalidate>
+        <label class="full">Title<input id="ann-title" maxlength="200" required placeholder="e.g. Office closed on Friday"></label>
+        <label class="full">Message <small class="muted">(line breaks are kept)</small>
+          <textarea id="ann-body" rows="7" maxlength="8000" placeholder="Write the notice…"></textarea>
+        </label>
+        <div class="full">
+          <div class="ann-preview-lab muted">Preview</div>
+          <div class="ann-preview" id="ann-preview"><p class="muted">The preview will appear here.</p></div>
+        </div>
+        <div class="full"><button class="btn" type="submit" id="ann-send">Send to All</button> <button class="btn grey" type="button" id="ann-cancel" hidden>Cancel</button> <span id="ann-msg" class="msg"></span></div>
+      </form>
+      <h2>Past Notices</h2>
+      <div id="ann-list" class="list"><p class="empty-note">No announcements yet.</p></div>
+    </div>
+  </div>
+
   <div id="pane-agents" class="pane scroll" hidden>
     <div class="wrap">
       <h2>👥 Authorised Agents</h2>
@@ -167,6 +188,7 @@
 <script src="compile.js"></script>
 <script src="portal.js"></script>
 <script src="matches.js"></script>
+<script src="announcements.js"></script>
 <script src="app.js"></script>
 </body>
 </html>

@@ -37,6 +37,10 @@
       if (started) return; started = true;
       $("who").textContent = (a.full_name || a.email) + " · " + a.role;
       $("tab-agents").hidden = !(a.role === "owner" || a.role === "admin");
+      $("tab-announce").hidden = !(a.role === "owner" || a.role === "admin" || a.role === "editor");
+      if (a.role === "owner" && !$("a-role").querySelector("option[value='editor']")) {
+        var opt = document.createElement("option"); opt.value = "editor"; opt.textContent = "Editor"; $("a-role").appendChild(opt);
+      }
       show("app");
       openTab((location.hash || "#industry").slice(1));
       refreshInboxBadge();
@@ -46,12 +50,16 @@
 
   // ---------- tabs ----------
   function openTab(t) {
-    if (["industry", "residential", "matches", "agents"].indexOf(t) < 0 || (t === "agents" && $("tab-agents").hidden)) t = "industry";
+    if (["industry", "residential", "matches", "announcements", "agents"].indexOf(t) < 0
+        || (t === "agents" && $("tab-agents").hidden)
+        || (t === "announcements" && $("tab-announce").hidden)) t = "industry";
     [].forEach.call($("tabs").children, function (b) { b.classList.toggle("on", b.dataset.tab === t); });
     ["industry", "residential"].forEach(function (c) { var f = $("fr-" + c); f.hidden = c !== t; if (c === t && !f.src) f.src = c + "/"; });
     $("pane-matches").hidden = t !== "matches"; $("pane-agents").hidden = t !== "agents";
+    $("pane-announcements").hidden = t !== "announcements";
     if (t === "matches") loadMatches();
     if (t === "agents") loadAgents();
+    if (t === "announcements" && TPG.loadAnnouncements) TPG.loadAnnouncements();
     history.replaceState(null, "", "#" + t);
   }
   $("tabs").addEventListener("click", function (e) { var b = e.target.closest("button[data-tab]"); if (b) openTab(b.dataset.tab); });
@@ -167,6 +175,7 @@
   $("inbox-backdrop").addEventListener("click", closeInbox);
   document.addEventListener("keydown", function (e) { if (e.key === "Escape") closeInbox(); });
   window.addEventListener("resize", function () { if (inboxOpen) placeInboxPanel(); });
+  TPG.refreshInboxBadge = refreshInboxBadge;
   inboxTimer = setInterval(function () { if (!$("app").hidden) refreshInboxBadge(); }, 60000);
 
   // ---------- boot ----------
