@@ -7,6 +7,9 @@
   var dateTime = new Intl.DateTimeFormat("en-MY", {
     dateStyle: "medium", timeStyle: "short", timeZone: "Asia/Kuala_Lumpur"
   });
+  var checkinTime = new Intl.DateTimeFormat("en-MY", {
+    hour: "numeric", minute: "2-digit", second: "2-digit", hour12: true, timeZone: "Asia/Kuala_Lumpur"
+  });
   var dateOnly = new Intl.DateTimeFormat("en-MY", {
     dateStyle: "medium", timeZone: "Asia/Kuala_Lumpur"
   });
@@ -23,26 +26,6 @@
     button.type = "button";
     button.addEventListener("click", fn);
     return button;
-  }
-
-  async function perform(button, rpc, params, onSuccess, fallback) {
-    var current = version;
-    clearTimeout(refreshTimer);
-    button.disabled = true;
-    try {
-      var response = await TPG.sb.rpc(rpc, params);
-      if (current !== version) return;
-      if (response.error) {
-        notice = response.error.code === "23505" ? "A check-in session already exists for today. Refresh to see it." : fallback;
-      } else {
-        notice = onSuccess(response.data);
-      }
-      await load();
-    } catch (_) {
-      if (current === version) panel.prepend(element("p", fallback, "msg"));
-    } finally {
-      button.disabled = false;
-    }
   }
 
   function showSummary(data) {
@@ -126,7 +109,7 @@
           (url.pathname !== home.pathname && url.pathname !== home.pathname + "index.html") ||
           !url.hash.startsWith("#meeting?")) return null;
       var value = new URLSearchParams(url.hash.slice("#meeting?".length)).get("checkin");
-      return tokenPattern.test(value || "") ? value : null;
+      return value === "weekly" || tokenPattern.test(value || "") ? value : null;
     } catch (_) {
       return null;
     }
@@ -193,7 +176,7 @@
               load();
               return;
             }
-            feedback.textContent = "Use the TPG meeting QR shown by your host.";
+            feedback.textContent = "Use the TPG meeting QR at the meeting entrance.";
           }
         }
         scanner.frame = requestAnimationFrame(scanFrame);
@@ -214,7 +197,7 @@
     var feedback = element("p", "", "msg");
     feedback.setAttribute("role", "status");
     var button = action("Scan QR", function () { openScanner(button, container, feedback); });
-    container.append(button, element("p", "Scan the QR displayed by your meeting host.", "muted"), feedback);
+    container.append(button, element("p", "Scan the QR at the meeting entrance.", "muted"), feedback);
     panel.appendChild(container);
     return button;
   }
@@ -245,73 +228,102 @@
     return canvas;
   }
 
-  function showHost(session) {
+  function downloadReport(report) {
+    var rows = [
+      ["Meeting date", report.day], ["Expected accounts", report.expected],
+      ["Late", report.late], ["Absent", report.absent], ["Total (RM) to review", report.total_rm], [],
+      ["Name", "Account", "Status", "Check-in time (MYT)", "Amount (RM) to review"]
+    ];
+    report.exceptions.forEach(function (row) {
+      rows.push([row.name, row.email, row.status,
+        row.checked_in_at ? checkinTime.format(new Date(row.checked_in_at)) : "", row.fine]);
+    });
+    var csv = rows.map(function (row) {
+      return row.map(function (value) {
+        var field = String(value);
+        if (typeof value === "string" && (/^\s*[=+@-]/.test(field) || /^[\t\r\n]/.test(field))) field = "'" + field;
+        return '"' + field.replaceAll('"', '""') + '"';
+      }).join(",");
+    }).join("\r\n");
+    var url = URL.createObjectURL(new Blob(["\uFEFF", csv], { type: "text/csv;charset=utf-8" }));
+    var link = element("a");
+    link.href = url;
+    link.download = "TPG-Check-in-" + report.day + ".csv";
+    link.click();
+    setTimeout(function () { URL.revokeObjectURL(url); }, 1000);
+  }
+
+  function showAdmin(current) {
     var host = element("section", null, "item attendance-host");
-    host.appendChild(element("h3", "Host check-in"));
-    if (!session) {
-      var form = element("form", null, "attendance-host-form");
-      var title = element("label", "Meeting title");
-      var titleInput = element("input");
-      titleInput.value = "Weekly Team Meeting";
-      titleInput.maxLength = 120;
-      titleInput.required = true;
-      title.appendChild(titleInput);
-      var duration = element("label", "Open for (minutes)");
-      var durationInput = element("input");
-      Object.assign(durationInput, { type: "number", required: true, min: 5, max: 60, value: 15 });
-      duration.appendChild(durationInput);
-      var open = element("button", "Open check-in", "btn sm");
-      open.type = "submit";
-      form.append(title, duration, open);
-      form.addEventListener("submit", function (event) {
-        event.preventDefault();
-        perform(open, "open_meeting_checkin", { p_title: titleInput.value.trim(), p_minutes: durationInput.valueAsNumber },
-          function () { return "Check-in is open."; }, "Could not open check-in. Try refreshing.");
-      });
-      host.appendChild(form);
-    } else {
-      var checkedIn = session.roster.filter(function (member) { return member.checked_in_at; }).length;
-      host.append(element("strong", session.title),
-        element("p", checkedIn + " of " + session.roster.length + " checked in", "muted"));
-      if (session.token) {
-        var link = checkinURL(session.token);
-        host.append(element("p", "Open until " + dateTime.format(new Date(session.closes_at)), "muted"), makeQR(link));
-        host.append(action("Close check-in", function (event) {
-          perform(event.currentTarget, "close_meeting_checkin", { p_session: session.id },
-            function () { return "Check-in closed."; }, "Could not close check-in.");
-        }));
-      } else {
-        host.appendChild(element("p", "Check-in closed", "muted"));
+    var door = element("details");
+    var qr = makeQR(checkinURL("weekly"));
+    var file = element("a", "Download door QR (PNG)", "btn sm");
+    file.download = "TPG-Tuesday-Check-in-QR.png";
+    file.href = qr.toDataURL("image/png");
+    door.append(element("summary", "Permanent door QR"), qr, file);
+    host.append(door, element("h3", "Tuesday attendance report"));
+    var content = element("div");
+    var feedback = element("p", "", "msg");
+    feedback.setAttribute("role", "status");
+    host.append(feedback, content);
+    panel.appendChild(host);
+
+    async function showReport(day) {
+      feedback.textContent = "Loading…";
+      try {
+        var response = await TPG.sb.rpc("weekly_checkin_report", { p_day: day });
+        if (current !== version) return;
+        if (response.error) throw response.error;
+        var data = response.data;
+        var report = data.report;
+        content.replaceChildren();
+        feedback.textContent = "";
+        if (!report) {
+          content.appendChild(element("p", "The report is available after Tuesday at 12:00 PM (Malaysia time).", "muted"));
+          return;
+        }
+        var label = element("label", "Meeting date ");
+        var dates = element("select");
+        data.dates.forEach(function (day) {
+          var option = element("option", dateOnly.format(new Date(day + "T00:00:00+08:00")));
+          option.value = day;
+          dates.appendChild(option);
+        });
+        dates.value = report.day;
+        dates.addEventListener("change", function () {
+          dates.disabled = true;
+          showReport(dates.value).finally(function () { dates.disabled = false; });
+        });
+        label.appendChild(dates);
+        content.append(label, element("p", report.expected + " expected accounts · " +
+          report.late + " late · " + report.absent + " absent · RM " + report.total_rm + " to review"));
+        var list = element("ul", null, "attendance-history");
+        report.exceptions.forEach(function (row) {
+          var time = row.checked_in_at ? " · " + checkinTime.format(new Date(row.checked_in_at)) : "";
+          list.appendChild(element("li", row.name + " · " + row.status + time + " · RM " + row.fine));
+        });
+        content.append(list, action("Download CSV for Excel", function () { downloadReport(report); }));
+      } catch (_) {
+        if (current === version) feedback.textContent = "Could not load the report.";
       }
-      var roster = element("details");
-      roster.appendChild(element("summary", "View today's roster"));
-      var list = element("ul", null, "attendance-history");
-      session.roster.forEach(function (member) {
-        var row = element("li");
-        var state = member.checked_in_at ? dateTime.format(new Date(member.checked_in_at))
-          : session.token ? "Waiting" : "Absent";
-        row.textContent = member.name + " · " + state;
-        list.appendChild(row);
-      });
-      roster.appendChild(list);
-      host.appendChild(roster);
     }
     host.appendChild(action("Refresh attendance", load));
-    panel.appendChild(host);
+    showReport(null);
   }
 
   async function submitScannedCode(current, feedback) {
     if (!token) return;
     feedback.textContent = "Checking in…";
     try {
-      var response = await TPG.sb.rpc("submit_meeting_checkin", { p_token: token });
+      var response = token === "weekly"
+        ? await TPG.sb.rpc("submit_weekly_checkin")
+        : await TPG.sb.rpc("submit_meeting_checkin", { p_token: token });
       if (current !== version) return;
       if (response.error) throw response.error;
       token = null;
       var result = response.data;
       if (result.status === "checked_in" || result.status === "already_checked_in") {
-        notice = (result.status === "checked_in" ? "Checked in · " : "Already checked in · ") +
-          dateTime.format(new Date(result.at));
+        notice = checkinTime.format(new Date(result.at));
       } else {
         notice = result.status === "closed" ? "This meeting's check-in has closed." :
           "Check-in is unavailable for this account or code.";
@@ -342,7 +354,7 @@
       if (current !== version) return;
       if (response.error) throw response.error;
       showSummary(response.data);
-      if (TPG.access && ["owner", "admin"].includes(TPG.access.role)) showHost(response.data.host_session);
+      if (TPG.access && ["owner", "admin"].includes(TPG.access.role)) showAdmin(current);
       var expires = response.data.host_session?.closes_at || response.data.history[0]?.closes_at;
       var remaining = Date.parse(expires) - Date.now();
       if (remaining > 0) refreshTimer = setTimeout(function () {
@@ -359,7 +371,7 @@
   TPG.checkin = {
     load: load,
     useToken: function (value) {
-      token = tokenPattern.test(value || "") ? value : null;
+      token = value === "weekly" || tokenPattern.test(value || "") ? value : null;
     },
     clear: function () {
       ++version;

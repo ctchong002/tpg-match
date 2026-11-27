@@ -13,7 +13,7 @@
   // ---------- login ----------
   var email = "";
   var pendingCheckin = new URLSearchParams(location.hash.split("?")[1]).get("checkin");
-  if (/^#meeting[?]/.test(location.hash) && /^[\da-f-]{36}$/i.test(pendingCheckin || "")) {
+  if (/^#meeting[?]/.test(location.hash) && (pendingCheckin === "weekly" || /^[\da-f-]{36}$/i.test(pendingCheckin || ""))) {
     sessionStorage.setItem("tpg-checkin", pendingCheckin);
   }
   $("f-email").addEventListener("submit", function (ev) {
