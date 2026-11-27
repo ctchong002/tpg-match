@@ -323,7 +323,9 @@
       token = null;
       var result = response.data;
       if (result.status === "checked_in" || result.status === "already_checked_in") {
-        notice = checkinTime.format(new Date(result.at));
+        var firstScan = new Date(result.at);
+        var greeting = result.late ? "You Are Late !" : "Welcome To The TPG Meeting !";
+        notice = checkinTime.format(firstScan) + " · " + greeting;
       } else {
         notice = result.status === "closed" ? "This meeting's check-in has closed." :
           "Check-in is unavailable for this account or code.";
